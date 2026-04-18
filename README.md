@@ -1,18 +1,48 @@
-# React + Vite
+🎵 Sñotify
+📌 Trabajo Práctico – React Parte II
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Materia: Programación Web Avanzada
 
-Currently, two official plugins are available:
+👥 Integrantes del Grupo
+Gaston Berhau
+Fabrizio Brollo
+Valentin Bustamante
+Lucas Ortiz
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Rol PM / Scrum Master:
 
-## React Compiler
+Gaston Berhau
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+📖 Descripción del Proyecto
 
-Note: This will impact Vite dev & build performances.
+Esta aplicación es una SPA (Single Page Application) desarrollada con React que permite visualizar un catálogo de canciones.
 
-## Expanding the ESLint configuration
+Los usuarios pueden:
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Explorar canciones en formato de tarjetas
+Buscar canciones
+Ver detalles de cada canción
+Guardar canciones favoritas
+Cambiar el idioma (español/inglés)
+Reproductor de Musica
+
+La aplicación consume datos desde una API simulada con MockAPI y utiliza localStorage para persistencia de datos del usuario.
+
+🚀 Tecnologías Utilizadas
+React
+Vite
+Tailwind CSS
+React Router DOM
+react-i18next
+MockAPI
+JavaScript (ES6+)
+
+1. Clonar el repositorio
+git clone https://github.com/TU-USUARIO/canciones-app.git
+2. Entrar al proyecto
+cd canciones-app
+3. Instalar dependencias
+npm install
+4. Ejecutar el proyecto
+npm run dev
+
