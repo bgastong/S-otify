@@ -38,7 +38,7 @@ MockAPI
 JavaScript (ES6+)
 
 1. Clonar el repositorio
-git clone https://github.com/TU-USUARIO/canciones-app.git
+git clone [https://github.com/TU-USUARIO/canciones-app.git](https://github.com/bgastong/S-otify)
 2. Entrar al proyecto
 cd canciones-app
 3. Instalar dependencias
