@@ -1,7 +1,7 @@
 @reference "tailwindcss";
 
 .favoritesPage {
-	@apply rounded-2xl bg-gradient-to-b from-zinc-800/70 to-zinc-950 p-6 md:p-8;
+	@apply rounded-2xl bg-linear-to-b from-zinc-800/70 to-zinc-950 p-6 md:p-8;
 	border: 1px solid var(--surface-border);
 }
 
