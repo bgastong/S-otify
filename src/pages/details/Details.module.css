@@ -1,0 +1,53 @@
+.detailsPage {
+	border: 1px solid var(--surface-border);
+	border-radius: 1rem;
+	padding: 1.5rem;
+	background: linear-gradient(to bottom, var(--surface-soft), #09090b);
+}
+
+.eyebrow {
+	font-size: 0.75rem;
+	text-transform: uppercase;
+	color: var(--text-soft);
+	letter-spacing: 0.2em;
+}
+
+.title {
+	margin-top: 0.5rem;
+	font-size: 1.875rem;
+	font-weight: 700;
+	color: #ffffff;
+}
+
+.body {
+	margin-top: 0.75rem;
+	max-width: 42rem;
+	font-size: 0.875rem;
+	color: var(--text-soft);
+}
+
+.infoCard {
+	margin-top: 1.5rem;
+	border: 1px solid var(--surface-border);
+	border-radius: 0.75rem;
+	padding: 1rem;
+	background: var(--panel-soft);
+}
+
+.infoTitle {
+	font-size: 0.875rem;
+	font-weight: 600;
+	color: var(--text-strong);
+}
+
+.infoText {
+	margin-top: 0.5rem;
+	font-size: 0.75rem;
+	color: var(--text-soft);
+}
+
+@media (min-width: 768px) {
+	.detailsPage {
+		padding: 2rem;
+	}
+}

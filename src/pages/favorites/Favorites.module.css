@@ -1,0 +1,32 @@
+@reference "tailwindcss";
+
+.favoritesPage {
+	@apply rounded-2xl bg-gradient-to-b from-zinc-800/70 to-zinc-950 p-6 md:p-8;
+	border: 1px solid var(--surface-border);
+}
+
+.eyebrow {
+	@apply text-xs uppercase text-zinc-400;
+	letter-spacing: 0.2em;
+}
+
+.title {
+	@apply mt-2 text-3xl font-bold text-white;
+}
+
+.body {
+	@apply mt-3 text-sm text-zinc-400;
+}
+
+.emptyBlock {
+	@apply mt-6 rounded-xl bg-zinc-900/70 p-5;
+	border: 1px solid var(--surface-border);
+}
+
+.emptyTitle {
+	@apply text-base font-semibold text-zinc-200;
+}
+
+.emptyText {
+	@apply mt-2 text-sm text-zinc-400;
+}
