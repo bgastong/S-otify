@@ -29,7 +29,7 @@ function Details() {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[300px] text-white/60">
+      <div className="flex flex-col items-center justify-center min-h-75 text-white/60">
         <div className="w-12 h-12 border-4 border-white/10 border-t-green-500 rounded-full animate-spin mb-4"></div>
         <p>Cargando detalles...</p>
       </div>
@@ -38,7 +38,7 @@ function Details() {
 
   if (error || !song) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[300px] text-white/60">
+      <div className="flex flex-col items-center justify-center min-h-75 text-white/60">
         <p>Error al cargar los detalles</p>
         <Link to="/" className="text-green-500 no-underline mt-4 hover:underline">← Volver</Link>
       </div>

@@ -5,7 +5,7 @@ function Header() {
   const [language, setLanguage] = useState('es');
 
   return (
-    <header className="bg-gradient-to-r from-green-500 to-gray-900 sticky top-0 z-100 shadow-lg px-8 py-4">
+    <header className="bg-linear-to-r from-green-500 to-gray-900 sticky top-0 z-100 shadow-lg px-8 py-4">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 no-underline text-white text-2xl font-bold">
           <span className="text-3xl">🎵</span>
