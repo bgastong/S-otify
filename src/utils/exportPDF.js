@@ -1,7 +1,51 @@
-import { jsPDF } from 'jspdf';
+const JSPDF_CDN_URL = 'https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js';
 
-export function exportSongToPDF(song) {
-  const doc = new jsPDF();
+let jsPdfLoaderPromise = null;
+
+function loadJsPDFFromCdn() {
+  if (window.jspdf?.jsPDF) {
+    return Promise.resolve(window.jspdf.jsPDF);
+  }
+
+  if (!jsPdfLoaderPromise) {
+    jsPdfLoaderPromise = new Promise((resolve, reject) => {
+      const existingScript = document.querySelector(`script[src="${JSPDF_CDN_URL}"]`);
+      if (existingScript) {
+        existingScript.addEventListener('load', () => resolve(window.jspdf?.jsPDF));
+        existingScript.addEventListener('error', () => reject(new Error('No se pudo cargar jsPDF desde CDN.')));
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.src = JSPDF_CDN_URL;
+      script.async = true;
+      script.onload = () => {
+        if (window.jspdf?.jsPDF) {
+          resolve(window.jspdf.jsPDF);
+          return;
+        }
+        reject(new Error('jsPDF se cargó, pero no se encontró en window.jspdf.'));
+      };
+      script.onerror = () => reject(new Error('No se pudo cargar jsPDF desde CDN.'));
+      document.head.appendChild(script);
+    });
+  }
+
+  return jsPdfLoaderPromise;
+}
+
+export async function exportSongToPDF(song) {
+  let JsPdfCtor;
+
+  try {
+    JsPdfCtor = await loadJsPDFFromCdn();
+  } catch (error) {
+    // Mantiene la app funcional aunque falle la carga externa.
+    alert('No se pudo generar el PDF en este momento. Verificá tu conexión e intentá nuevamente.');
+    return;
+  }
+
+  const doc = new JsPdfCtor();
   
   // Titulo
   doc.setFontSize(24);
