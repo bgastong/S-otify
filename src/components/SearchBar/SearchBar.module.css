@@ -1,12 +1,24 @@
 @reference "tailwindcss";
 
+.srOnly {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
 .searchBar {
 	@apply my-4 w-full max-w-2xl;
 	position: relative;
 }
 
 .input {
-	@apply w-full rounded-full border bg-zinc-900 py-3 pl-11 pr-5 text-sm text-zinc-100 shadow-inner shadow-black/40 outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-500;
+	@apply w-full rounded-full border bg-zinc-900/95 py-3 pl-11 pr-5 text-sm text-zinc-100 shadow-inner shadow-black/40 outline-none transition duration-200 placeholder:text-zinc-500 hover:border-zinc-600 focus:border-zinc-300 focus:ring-2 focus:ring-zinc-400;
 	border-color: var(--surface-border);
 	color: var(--text-strong);
 }
@@ -16,6 +28,11 @@
 }
 
 .icon {
-	@apply pointer-events-none absolute left-4 top-1/2 -translate-y-1/2;
+	@apply pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-base;
 	color: var(--text-soft);
+	transition: color 0.2s ease;
+}
+
+.searchBar:focus-within .icon {
+	color: var(--spotify-green-strong);
 }
