@@ -34,15 +34,18 @@ function loadJsPDFFromCdn() {
   return jsPdfLoaderPromise;
 }
 
-export async function exportSongToPDF(song) {
+export async function exportSongToPDF(song, options = {}) {
+  const { onError } = options;
   let JsPdfCtor;
 
   try {
     JsPdfCtor = await loadJsPDFFromCdn();
-  } catch (error) {
-    // Mantiene la app funcional aunque falle la carga externa.
-    alert('No se pudo generar el PDF en este momento. Verificá tu conexión e intentá nuevamente.');
-    return;
+  } catch (err) {
+    const message = 'No se pudo generar el PDF en este momento. Verifica tu conexion e intenta nuevamente.';
+    if (typeof onError === 'function') {
+      onError(message, err);
+    }
+    return { ok: false, error: message };
   }
 
   const doc = new JsPdfCtor();
@@ -93,10 +96,11 @@ export async function exportSongToPDF(song) {
   // Footer
   doc.setFontSize(10);
   doc.setTextColor(150, 150, 150);
-  doc.text('Sñotify - Tu aplicación de música', 20, 280);
+  doc.text('S-otify - Tu aplicacion de musica', 20, 280);
   
   // Guardar PDF
   doc.save(`${song.name} - ${song.artist}.pdf`);
+  return { ok: true };
 }
 
 export default exportSongToPDF;

@@ -1,21 +1,21 @@
 @reference "tailwindcss";
 
 .favoritesPage {
-	@apply rounded-2xl bg-linear-to-b from-zinc-800/70 to-zinc-950 p-6 md:p-8;
+	@apply rounded-2xl bg-linear-to-b from-zinc-800/70 to-black p-6 md:p-8;
 	border: 1px solid var(--surface-border);
 }
 
 .eyebrow {
-	@apply text-xs uppercase text-zinc-400;
+	@apply text-xs font-semibold uppercase text-zinc-300;
 	letter-spacing: 0.2em;
 }
 
 .title {
-	@apply mt-2 text-3xl font-bold text-white;
+	@apply mt-2 text-3xl font-black text-white md:text-4xl;
 }
 
 .body {
-	@apply mt-3 text-sm text-zinc-400;
+	@apply mt-3 text-sm text-zinc-300;
 }
 
 .emptyBlock {
@@ -29,4 +29,28 @@
 
 .emptyText {
 	@apply mt-2 text-sm text-zinc-400;
+}
+
+.backLink {
+	@apply mt-4 inline-flex rounded-full bg-[#1ed760] px-4 py-2 text-sm font-bold text-black no-underline transition hover:bg-[#3be477];
+}
+
+.listGrid {
+	@apply mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3;
+}
+
+.favoriteCard {
+	@apply flex items-center gap-3 rounded-xl border border-zinc-800 bg-zinc-900/80 p-3 no-underline transition hover:border-zinc-600 hover:bg-zinc-800;
+}
+
+.cover {
+	@apply h-14 w-14 rounded-lg object-cover;
+}
+
+.songTitle {
+	@apply overflow-hidden text-ellipsis whitespace-nowrap text-sm font-semibold text-zinc-100;
+}
+
+.songMeta {
+	@apply mt-1 overflow-hidden text-ellipsis whitespace-nowrap text-xs text-zinc-400;
 }

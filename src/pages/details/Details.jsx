@@ -1,20 +1,20 @@
-import styles from "./Details.module.css";
-
-export default function Details() {
+function Details() {
     return (
-        <section className={styles.detailsPage}>
-            <p className={styles.eyebrow}>Detalle</p>
-            <h1 className={styles.title}>Vista de canción</h1>
-            <p className={styles.body}>
-                Esta pantalla ya está preparada con estética tipo Spotify para integrar el fetch por ID y el 404 obligatorio del TP.
+        <section className="rounded-2xl border border-zinc-800/80 bg-linear-to-b from-zinc-800/60 to-black p-6 md:p-8">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-zinc-300">Detalle</p>
+            <h1 className="mt-2 text-3xl font-black text-white md:text-4xl">Vista de cancion</h1>
+            <p className="mt-3 max-w-2xl text-sm text-zinc-300">
+                Esta pantalla queda lista para la integracion de Fabrizio: fetch por id, manejo de error y render final de datos.
             </p>
 
-            <div className={styles.infoCard}>
-                <p className={styles.infoTitle}>Información ampliada</p>
-                <p className={styles.infoText}>
-                    Acá van artista, álbum, duración y metadatos adicionales.
+            <div className="mt-6 rounded-xl border border-zinc-800 bg-zinc-900/65 p-4">
+                <p className="text-sm font-semibold text-zinc-200">Integracion pendiente</p>
+                <p className="mt-2 text-xs text-zinc-400">
+                    No implementar logica final en esta rama para evitar conflictos con tareas asignadas.
                 </p>
             </div>
         </section>
     );
 }
+
+export default Details;
