@@ -1,48 +1,112 @@
-🎵 Sñotify
-📌 Trabajo Práctico – React Parte II
+# S-otify
 
-Materia: Programación Web Avanzada
+## Catedra
 
-👥 Integrantes del Grupo
-Gaston Berhau
-Fabrizio Brollo
-Valentin Bustamante
-Lucas Ortiz
+- Facultad de Informatica - Programacion Web Avanzada
+- Trabajo Practico: React Parte II
 
-Rol PM / Scrum Master:
+## Integrantes
 
-Gaston Berhau
+- Gaston Berhau
+- Fabrizio Brollo
+- Valentin Bustamante
+- Lucas Ortiz
 
-📖 Descripción del Proyecto
+## Descripcion
 
-Esta aplicación es una SPA (Single Page Application) desarrollada con React que permite visualizar un catálogo de canciones.
+S-otify es una SPA de musica desarrollada con React, React Router y Tailwind CSS. La aplicacion consume una API simulada en MockAPI para listar canciones, buscar por cancion o artista, aplicar filtros por genero y visualizar detalles por elemento.
 
-Los usuarios pueden:
+## Funcionalidades principales
 
-Explorar canciones en formato de tarjetas
-Buscar canciones
-Ver detalles de cada canción
-Guardar canciones favoritas
-Cambiar el idioma (español/inglés)
-Reproductor de Musica
+- Home con cards de canciones.
+- Busqueda letra a letra por cancion y artista.
+- Filtro por genero.
+- Navegacion entre Home, Details y Favorites.
+- Vista de detalle con informacion ampliada por id.
+- Exportacion a PDF desde details.
+- Estilo visual inspirado en Spotify.
 
-La aplicación consume datos desde una API simulada con MockAPI y utiliza localStorage para persistencia de datos del usuario.
+## Tecnologias
 
-🚀 Tecnologías Utilizadas
-React
-Vite
-Tailwind CSS
-React Router DOM
-react-i18next
-MockAPI
-JavaScript (ES6+)
+- React 19
+- Vite 8
+- Tailwind CSS 4
+- React Router DOM
+- jsPDF
 
-1. Clonar el repositorio
-git clone (https://github.com/bgastong/S-otify)
-2. Entrar al proyecto
-cd Sñotify
-3. Instalar dependencias
-npm install
-4. Ejecutar el proyecto
-npm run dev
+## Estructura del proyecto
+
+- src/main.jsx: entrada de la app.
+- src/App.jsx: layout global y rutas.
+- src/pages: vistas principales.
+- src/components: componentes reutilizables.
+- src/services: acceso a MockAPI.
+- src/hooks: logica compartida de estado.
+- src/constants: configuraciones globales.
+- src/utils: utilidades auxiliares.
+- docs: documentacion tecnica.
+- scripts: scripts de carga de datos.
+
+Mas detalle en docs/ARCHITECTURE.md.
+
+## Requisitos
+
+- Node.js 20 o superior.
+- npm 10 o superior.
+
+## Instalacion y ejecucion
+
+1. Clonar repositorio:
+
+	git clone <URL_DEL_REPO>
+
+2. Entrar al proyecto:
+
+	cd S-otify
+
+3. Instalar dependencias:
+
+	npm install
+
+4. Iniciar entorno de desarrollo:
+
+	npm run dev
+
+5. Verificar calidad:
+
+	npm run lint
+
+6. Build de produccion:
+
+	npm run build
+
+## Scripts
+
+- npm run dev
+- npm run build
+- npm run preview
+- npm run lint
+- npm run seed:songs
+
+## API
+
+Base URL utilizada:
+
+https://69ebb64897482ad5c528051d.mockapi.io/api/s-otify/songs
+
+Documentacion de endpoints y contrato: docs/API.md.
+
+## Capturas
+
+Agregar capturas en esta seccion antes de la entrega:
+
+- Home
+- Details
+- Favorites
+
+## Notas de diseno
+
+- Se centralizo todo acceso HTTP en src/services/songsService.js.
+- Se reutiliza src/hooks/useAsyncStatus.js para estados async.
+- Se aplico una estetica visual tipo Spotify manteniendo componentes modulares.
 

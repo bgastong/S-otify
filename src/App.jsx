@@ -1,28 +1,23 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Header from './components/Header';
-import Footer from './components/Footer';
-import Details from './pages/Details';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Home from "./pages/home/Home.jsx";
+import Details from "./pages/details/Details.jsx";
+import Favorites from "./pages/favorites/Favorites.jsx";
+import Header from "./components/Header/Header.jsx";
+import Footer from "./components/Footer/Footer.jsx";
+import LayoutShell from "./components/LayoutShell/LayoutShell.jsx";
 
 function App() {
   return (
     <BrowserRouter>
       <div className="min-h-screen flex flex-col bg-gray-950 text-white">
         <Header />
-        <main className="flex-1 max-w-7xl w-full mx-auto p-8">
+        <LayoutShell>
           <Routes>
-            <Route path="/" element={
-              <div className="flex flex-col items-center justify-center min-h-[50vh] text-center text-white/60">
-                <h2 className="text-3xl mb-2">🎵 Catálogo de canciones</h2>
-              </div>
-            } />
+            <Route path="/" element={<Home />} />
             <Route path="/details/:id" element={<Details />} />
-            <Route path="/favorites" element={
-              <div className="flex flex-col items-center justify-center min-h-[50vh] text-center text-white/60">
-                <h2 className="text-3xl mb-2">❤️ Tus favoritos</h2>
-              </div>
-            } />
+            <Route path="/favorites" element={<Favorites />} />
           </Routes>
-        </main>
+        </LayoutShell>
         <Footer />
       </div>
     </BrowserRouter>

@@ -1,0 +1,49 @@
+@reference "tailwindcss";
+
+.footer {
+  @apply mt-auto border-t border-zinc-800 bg-black/95 px-6 py-12 text-white md:px-8;
+}
+
+.grid {
+  @apply mx-auto grid max-w-7xl grid-cols-1 gap-8 md:grid-cols-4;
+}
+
+.section {
+  @apply flex flex-col gap-3;
+}
+
+.brandTitle {
+  @apply m-0 text-2xl font-black tracking-tight text-white;
+}
+
+.softText {
+  @apply m-0 leading-relaxed text-zinc-400;
+}
+
+.sectionTitle {
+  @apply m-0 text-lg font-semibold text-white;
+}
+
+.links {
+  @apply flex flex-col gap-2;
+}
+
+.navLink {
+  @apply text-zinc-400 no-underline transition-colors duration-300 hover:text-white;
+}
+
+.teamList {
+  @apply m-0 list-none p-0 text-zinc-400;
+}
+
+.teamList li {
+  @apply py-0.5;
+}
+
+.bottom {
+  @apply mx-auto mt-8 border-t border-zinc-800 pt-6 text-center;
+}
+
+.copyright {
+  @apply m-0 text-sm text-zinc-500;
+}
