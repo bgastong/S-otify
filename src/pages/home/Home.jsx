@@ -4,6 +4,7 @@ import useAsyncStatus from "../../hooks/useAsyncStatus";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import FilterSong from "../../components/FilterSong/FilterSong";
 import AsyncState from "../../components/AsyncState/AsyncState";
+import SongCard from "../../components/SongCard/SongCard";
 import styles from "./Home.module.css";
 
 function Home() {
@@ -111,11 +112,7 @@ function Home() {
         {songs.length > 0 && (
           <div className={styles.cardsGrid}>
             {songs.map((song) => (
-              <article key={song.id} className={styles.tempCard}>
-                <p className={styles.tempCardTitle}>{song.name}</p>
-                <p className={styles.tempCardMeta}>{song.artist}</p>
-                <p className={styles.tempCardMeta}>Card pendiente de integracion de Fabrizio.</p>
-              </article>
+              <SongCard key={song.id} song={song} />
             ))}
           </div>
         )}
