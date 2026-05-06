@@ -1,10 +1,16 @@
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { APP_NAME, NAV_LINKS } from '../../constants/appConfig';
 import styles from './Header.module.css';
 
 function Header() {
-  const [language, setLanguage] = useState('es');
+  const { t, i18n } = useTranslation();
+
+  const handleLanguageChange = (e) => {
+    const lang = e.target.value;
+    i18n.changeLanguage(lang);
+    localStorage.setItem('snortify_language', lang);
+  };
 
   return (
     <header className={styles.header}>
@@ -16,8 +22,8 @@ function Header() {
 
         <div className={styles.navWrapper}>
           <select
-            value={language}
-            onChange={(e) => setLanguage(e.target.value)}
+            value={i18n.language}
+            onChange={handleLanguageChange}
             className={styles.languageSelect}
           >
             <option value="es" className="text-black">ES</option>
@@ -26,7 +32,7 @@ function Header() {
 
           {NAV_LINKS.map((item) => (
             <Link key={item.to} to={item.to} className={styles.navLink}>
-              {item.label}
+              {item.key ? t(item.key) : item.label}
             </Link>
           ))}
         </div>
