@@ -5,6 +5,7 @@ import Favorites from "./pages/favorites/Favorites.jsx";
 import Header from "./components/Header/Header.jsx";
 import Footer from "./components/Footer/Footer.jsx";
 import LayoutShell from "./components/LayoutShell/LayoutShell.jsx";
+import Player from "./components/Player.jsx";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
             <Route path="/favorites" element={<Favorites />} />
           </Routes>
         </LayoutShell>
+        <Player />
         <Footer />
       </div>
     </BrowserRouter>
