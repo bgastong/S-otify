@@ -1,0 +1,222 @@
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { songsService } from "../../services/songsService";
+import AsyncState from "../AsyncState/AsyncState";
+
+function SongDetails() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [song, setSong] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [imageError, setImageError] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchSongDetails = async () => {
+      if (!id) {
+        setSong(null);
+        return;
+      }
+
+      setLoading(true);
+      setError(null);
+
+      try {
+        const data = await songsService.getSongById(id);
+        if (isMounted && data) {
+          setSong(data);
+        } else if (isMounted && !data) {
+          setError("No se encontró la canción.");
+        }
+      } catch (err) {
+        if (isMounted) {
+          setError(err.message || "No pudimos cargar los detalles de la canción.");
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchSongDetails();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [id]);
+
+  const handleAddToFavorites = () => {
+    // TODO: Implementar lógica de favoritos
+    console.log("Canción agregada a favoritos:", song.id);
+  };
+
+  const handlePlay = () => {
+    // TODO: Implementar reproducción
+    console.log("Reproduciendo:", song.name);
+  };
+
+  return (
+    <section className="min-h-screen bg-gradient-to-b from-[#1e1e2e] to-[#0f0f1e] py-8 px-4">
+      <div className="max-w-4xl mx-auto">
+        <button
+          onClick={() => navigate(-1)}
+          className="cursor-pointer mb-6 px-4 py-2 text-sm font-medium text-white/70 hover:text-white transition-colors flex items-center gap-2 group"
+        >
+          <span className=" text-lg group-hover:-translate-x-1 transition-transform">←</span>
+          Volver
+        </button>
+
+        <AsyncState
+          loading={loading}
+          error={error}
+          isEmpty={!loading && !error && !song}
+          loadingMessage="Cargando detalles de la canción..."
+          emptyMessage="No se encontró la canción."
+          onRetry={() => window.location.reload()}
+        />
+
+        {song && (
+          <div className="rounded-2xl border border-white/10 bg-gradient-to-b from-[#252535]/50 to-[#1a1a2e]/50 overflow-hidden backdrop-blur-sm">
+            {/* Header con imagen de fondo */}
+            <div className="relative h-64 md:h-96 overflow-hidden bg-gradient-to-br from-[#1e1e2e] to-[#0f0f1e]">
+              {!imageError && song.image ? (
+                <img
+                  src={song.image}
+                  alt={song.name}
+                  className="w-full h-full object-cover opacity-40"
+                  onError={() => setImageError(true)}
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-white/20 text-8xl">
+                  ♪
+                </div>
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a2e] via-transparent to-transparent" />
+            </div>
+
+            {/* Contenido principal */}
+            <div className="px-6 md:px-8 py-8">
+              <div className="flex flex-col md:flex-row gap-8">
+                {/* Imagen de portada destacada */}
+                <div className="flex-shrink-0">
+                  <div className="w-full md:w-48 aspect-square rounded-lg overflow-hidden border border-white/10 shadow-2xl">
+                    {!imageError && song.image ? (
+                      <img
+                        src={song.image}
+                        alt={song.name}
+                        className="w-full h-full object-cover"
+                        onError={() => setImageError(true)}
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-[#2d2d44] to-[#1e1e2e] flex items-center justify-center text-white/30 text-5xl">
+                        ♪
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Información de la canción */}
+                <div className="flex-1">
+                  <p className="text-xs font-semibold uppercase tracking-widest text-white/50 mb-2">
+                    Canción
+                  </p>
+                  <h1 className="text-4xl md:text-5xl font-black text-white mb-2 leading-tight">
+                    {song.name}
+                  </h1>
+
+                  <p className="text-xl text-white/70 mb-6">{song.artist}</p>
+
+                  {song.genre && (
+                    <p className="inline-block px-3 py-1 bg-white/10 rounded-full text-sm text-white/70 mb-6">
+                      {song.genre}
+                    </p>
+                  )}
+
+                  {/* Acciones */}
+                  <div className="flex flex-col sm:flex-row gap-3 mt-8">
+                    <button
+                      onClick={handlePlay}
+                      className="flex-1 px-6 py-3 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white font-semibold rounded-lg hover:from-indigo-700 hover:to-indigo-600 transition-all duration-300 shadow-lg hover:shadow-indigo-500/50 flex items-center justify-center gap-2"
+                    >
+                      <span className="text-lg">▶</span>
+                      Reproducir
+                    </button>
+                    <button
+                      onClick={handleAddToFavorites}
+                      className="flex-1 px-6 py-3 bg-white/10 text-white font-semibold rounded-lg hover:bg-white/20 transition-colors duration-300 border border-white/20 flex items-center justify-center gap-2"
+                    >
+                      <span className="text-lg">♡</span>
+                      Agregar a Favoritos
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Detalles adicionales */}
+              <div className="mt-12 pt-8 border-t border-white/10">
+                <h2 className="text-xl font-bold text-white mb-6">Detalles</h2>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+                  <div>
+                    <p className="text-xs uppercase tracking-widest text-white/50 mb-2">
+                      Artista
+                    </p>
+                    <p className="text-lg font-semibold text-white">
+                      {song.artist}
+                    </p>
+                  </div>
+
+                  {song.genre && (
+                    <div>
+                      <p className="text-xs uppercase tracking-widest text-white/50 mb-2">
+                        Género
+                      </p>
+                      <p className="text-lg font-semibold text-white capitalize">
+                        {song.genre}
+                      </p>
+                    </div>
+                  )}
+
+                  <div>
+                    <p className="text-xs uppercase tracking-widest text-white/50 mb-2">
+                      ID
+                    </p>
+                    <p className="text-lg font-semibold text-white/70 font-mono">
+                      {song.id}
+                    </p>
+                  </div>
+
+                  {song.duration && (
+                    <div>
+                      <p className="text-xs uppercase tracking-widest text-white/50 mb-2">
+                        Duración
+                      </p>
+                      <p className="text-lg font-semibold text-white">
+                        {song.duration}
+                      </p>
+                    </div>
+                  )}
+
+                  {song.year && (
+                    <div>
+                      <p className="text-xs uppercase tracking-widest text-white/50 mb-2">
+                        Año
+                      </p>
+                      <p className="text-lg font-semibold text-white">
+                        {song.year}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+export default SongDetails;
