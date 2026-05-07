@@ -65,3 +65,15 @@
 .tempCardMeta {
 	@apply mt-1 overflow-hidden text-ellipsis whitespace-nowrap text-xs text-zinc-400;
 }
+
+.sentinel {
+	@apply h-1 w-full;
+}
+
+.loadingMore {
+	@apply mt-8 text-center;
+}
+
+.loadingMore p {
+	@apply text-sm text-zinc-400;
+}
