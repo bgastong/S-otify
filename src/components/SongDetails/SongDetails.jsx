@@ -12,6 +12,7 @@ function SongDetails({ onSelectSong }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [imageError, setImageError] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -50,9 +51,28 @@ function SongDetails({ onSelectSong }) {
     };
   }, [id]);
 
+  // Cargar estado de favorito
+  useEffect(() => {
+    if (song?.id) {
+      const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+      setIsFavorite(favorites.some(f => f.id === song.id));
+    }
+  }, [song]);
+
   const handleAddToFavorites = () => {
-    // TODO: Implementar lógica de favoritos
-    console.log("Canción agregada a favoritos:", song.id);
+    if (!song) return;
+    
+    const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    let newFavorites;
+    
+    if (isFavorite) {
+      newFavorites = favorites.filter(f => f.id !== song.id);
+    } else {
+      newFavorites = [...favorites, song];
+    }
+    
+    localStorage.setItem('favorites', JSON.stringify(newFavorites));
+    setIsFavorite(!isFavorite);
   };
 
   const handlePlay = () => {
@@ -149,10 +169,16 @@ function SongDetails({ onSelectSong }) {
                     </button>
                     <button
                       onClick={handleAddToFavorites}
-                      className="flex-1 px-6 py-3 bg-white/10 text-white font-semibold rounded-full hover:bg-white/20 hover:scale-105 active:scale-95 transition-all duration-200 border border-white/10 flex items-center justify-center gap-2"
+                      className={`flex-1 px-6 py-3 font-semibold rounded-full transition-all duration-200 border flex items-center justify-center gap-2 ${
+                        isFavorite 
+                          ? 'bg-green-500/20 text-green-400 border-green-500/30 hover:bg-green-500/30' 
+                          : 'bg-white/10 text-white border-white/10 hover:bg-white/20 hover:scale-105 active:scale-95'
+                      }`}
                     >
-                      <span className="text-lg">♡</span>
-                      {t('details.addToFavorites')}
+                      <span className={`text-lg ${isFavorite ? 'text-green-400' : ''}`}>
+                        {isFavorite ? '♥' : '♡'}
+                      </span>
+                      {isFavorite ? t('details.removeFromFavorites') : t('details.addToFavorites')}
                     </button>
                   </div>
                 </div>
