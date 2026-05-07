@@ -15,44 +15,82 @@ function Home() {
   const [filters, setFilters] = useState({ genre: "" });
   const [allGenres, setAllGenres] = useState([]);
   const [genresError, setGenresError] = useState("");
+  const [hasMore, setHasMore] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const { loading, error, runTask } = useAsyncStatus();
   const isSearching = searchTerm.trim().length > 0;
   const requestIdRef = useRef(0);
+  const observerRef = useRef(null);
+  const pageRef = useRef(1);
 
-  const fetchSongs = useCallback(async (search, genre) => {
+  const fetchSongs = useCallback(async (search, genre, page = 1, isLoadingMore = false) => {
     const currentRequestId = requestIdRef.current + 1;
     requestIdRef.current = currentRequestId;
 
-    const data = await runTask(
-      () => {
-        const query = search.trim();
-        const options = { page: 1, limit: 30, genre };
-        if (!query) {
-          return songsService.getSongs(options);
-        }
-        return songsService.searchSongs(query, options);
-      },
-      t('home.errorMessage')
-    );
+    const fetchTask = async () => {
+      const query = search.trim();
+      const options = { page, limit: 10, genre };
+      if (!query) {
+        return songsService.getSongs(options);
+      }
+      return songsService.searchSongs(query, options);
+    };
+
+    const data = await runTask(fetchTask, t('home.errorMessage'));
 
     if (currentRequestId !== requestIdRef.current) {
       return;
     }
 
     if (Array.isArray(data)) {
-      setSongs(data);
+      if (isLoadingMore) {
+        setSongs((prev) => [...prev, ...data]);
+      } else {
+        setSongs(data);
+      }
+      setHasMore(data.length === 10);
       return;
     }
-    setSongs([]);
+    
+    if (!isLoadingMore) {
+      setSongs([]);
+    }
+    setHasMore(false);
   }, [runTask, t]);
 
   useEffect(() => {
+    pageRef.current = 1;
+    setHasMore(true);
     const timer = setTimeout(() => {
-      fetchSongs(searchTerm, filters.genre);
+      fetchSongs(searchTerm, filters.genre, 1, false);
     }, 80);
 
     return () => clearTimeout(timer);
   }, [searchTerm, filters.genre, fetchSongs]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !loading && !loadingMore) {
+          setLoadingMore(true);
+          const nextPage = pageRef.current + 1;
+          pageRef.current = nextPage;
+          fetchSongs(searchTerm, filters.genre, nextPage, true).finally(() => {
+            setLoadingMore(false);
+          });
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (observerRef.current) {
+      observer.observe(observerRef.current);
+    }
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [hasMore, loading, loadingMore, searchTerm, filters.genre, fetchSongs]);
 
   useEffect(() => {
     const fetchGenres = async () => {
@@ -95,7 +133,7 @@ function Home() {
         {genresError && (
           <p className={styles.sectionSubtitle}>{genresError}</p>
         )}
-
+cad
         <AsyncState
           loading={loading}
           error={error}
@@ -117,6 +155,13 @@ function Home() {
             {songs.map((song) => (
               <SongCard key={song.id} song={song} />
             ))}
+            <div ref={observerRef} style={{ height: '1px' }} />
+          </div>
+        )}
+        
+        {loadingMore && (
+          <div style={{ textAlign: 'center', padding: '2rem', color: '#888' }}>
+            {t('home.loadingMessage')}
           </div>
         )}
       </div>
