@@ -2,7 +2,7 @@
 // Purpose: carga canciones base en MockAPI tomando metadatos desde Deezer.
 
 const songs = [
-  { name: "Buenos Tiempos", artist: "Dillom", youtubeId: "kYvM-iR6FpQ", genre: "Trap" },
+  { name: "Buenos Tiempos", artist: "Dillom", youtubeId: "kYvM-iR6FpQ", genre: "Trap", audioUrl: "https://res.cloudinary.com/doamuwxuq/video/upload/q_auto/f_auto/v1778124637/DILLOM_-_Buenos_tiempos_Videoclip_izatzc.mp3"},
   { name: "Platos Rotos", artist: "Kamada", youtubeId: "H77O0u8Nq5g", genre: "Rap" },
   { name: "Josear", artist: "Acru", youtubeId: "3u_xYVvWcUA", genre: "Rap" },
   { name: "Guchi Polo", artist: "Saramalacara", youtubeId: "Gk6f7-t6YJ8", genre: "Trap" },
@@ -87,25 +87,28 @@ async function createSong(songData) {
   return response.json();
 }
 
-async function searchOnDeezer(artist, title) {
+
+async function getSongImage(artist, title) {
   try {
     const query = encodeURIComponent(`${artist} ${title}`);
-    const response = await fetch(`https://api.deezer.com/search?q=${query}&limit=1`);
+
+    const response = await fetch(
+      `https://itunes.apple.com/search?term=${query}&entity=song&limit=1`
+    );
+
     const data = await response.json();
 
-    if (data.data && data.data.length > 0) {
-      const track = data.data[0];
-      return {
-        image: track.album?.cover_big || track.album?.cover_medium || track.artist?.picture_big,
-        album: track.album?.title,
-        duration: Math.floor(track.duration / 60) + ":" + String(track.duration % 60).padStart(2, '0'),
-        audioUrl: track.preview || ""
-      };
+    if (data.results?.length > 0) {
+      return data.results[0].artworkUrl100.replace(
+        "100x100",
+        "600x600"
+      );
     }
   } catch (e) {
-    console.log(`Error buscando ${artist} - ${title}:`, e.message);
+    console.log("Image error:", e.message);
   }
-  return null;
+
+  return "https://placehold.co/600x600/png?text=S%C3%B1otify";
 }
 
 async function uploadSongs() {
@@ -113,21 +116,20 @@ async function uploadSongs() {
   const existingSongs = await getExistingSongs();
 
   for (let i = 0; i < songs.length; i++) {
-    const song = songs[i];
-    console.log(`[${i + 1}/30] Syncing: ${song.name} - ${song.artist}...`);
+      const song = songs[i];
 
-    const deezerData = await searchOnDeezer(song.artist, song.name);
+      const image = await getSongImage(song.artist, song.name);
 
     const songData = {
       name: song.name,
       artist: song.artist,
       youtubeId: song.youtubeId,
       genre: song.genre,
-      image: deezerData?.image || "https://via.placeholder.com/300x300?text=No+Image",
-      album: deezerData?.album || "Unknown Album",
-      duration: deezerData?.duration || "0:00",
-      audioUrl: deezerData?.audioUrl || ""
-    };
+      image,
+      album: song.album || "Unknown Album",
+      duration: song.duration || "0:00",
+      audioUrl: song.audioUrl || ""
+};
 
     try {
       const matches = existingSongs.filter((item) => isSameSong(item, song));
@@ -146,8 +148,6 @@ async function uploadSongs() {
       console.log(`   ❌ Error: ${e.message}`);
     }
 
-    // Rate limit - wait between requests
-    await new Promise(r => setTimeout(r, 500));
   }
 
   console.log("\n🎉 Done! MockAPI songs synced.");
