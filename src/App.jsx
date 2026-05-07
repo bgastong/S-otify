@@ -12,6 +12,12 @@ function App() {
   const [selectedSong, setSelectedSong] = useState(null);
   const [playerNotice, setPlayerNotice] = useState("");
   const [playRequestId, setPlayRequestId] = useState(0);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentGenre, setCurrentGenre] = useState("");
+
+  const handleFilterChange = useCallback((genre) => {
+    setCurrentGenre(genre);
+  }, []);
 
   const handleSelectSong = useCallback((song, options = {}) => {
     if (!song) return;
@@ -43,11 +49,11 @@ function App() {
             backgroundSize: 'cover'
 }}
       >
-        <Header />
+        <Header searchTerm={searchTerm} onSearchChange={setSearchTerm} currentGenre={currentGenre} onFilterChange={handleFilterChange} />
         <main className="grow pt-28 md:pt-32 pb-36">
           <LayoutShell>
             <Routes>
-              <Route path="/" element={<Home onSelectSong={handleSelectSong} />} />
+              <Route path="/" element={<Home onSelectSong={handleSelectSong} searchTerm={searchTerm} currentGenre={currentGenre} />} />
               <Route path="/details/:id" element={<Details onSelectSong={handleSelectSong} />} />
               <Route path="/favorites" element={<Favorites />} />
             </Routes>
