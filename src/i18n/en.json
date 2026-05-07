@@ -6,6 +6,10 @@
     "error": "Error",
     "back": "Go back"
   },
+  "app": {
+    "songNotFound": "\"{{songName}}\" could not be found to play.",
+    "alternativeSongPlaying": "\"{{originalName}}\" could not be found to play. Playing an alternative by {{artistName}}."
+  },
   "nav": {
     "home": "Home",
     "favorites": "Favorites"
@@ -44,7 +48,11 @@
   },
   "player": {
     "noSongSelected": "No song selected",
-    "volume": "Vol"
+    "volume": "Vol",
+    "youtubeApiError": "Could not load YouTube API.",
+    "videoUnavailable": "This video is not available for playback.",
+    "audioLoadError": "Could not load the audio for this song.",
+    "tryYoutubeFallback": "Tap Play to open an alternative on YouTube."
   },
   "footer": {
     "brandSubtitle": "Your favorite music app.",

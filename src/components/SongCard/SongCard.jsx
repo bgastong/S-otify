@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function SongCard({ song }) {
+function SongCard({ song, onSelectSong, isEmbeddable = true }) {
   const navigate = useNavigate();
   const [imageError, setImageError] = useState(false);
 
   const handleCardClick = () => {
+    if (typeof onSelectSong === "function") {
+      onSelectSong(song);
+    }
     navigate(`/details/${song.id}`);
   };
 
@@ -37,6 +40,11 @@ function SongCard({ song }) {
         <p className="m-0 text-xs text-white/70 truncate">
           {song.artist}
         </p>
+        {!isEmbeddable && (
+          <p className="m-0 text-[11px] text-amber-300">
+            Reproducción no disponible
+          </p>
+        )}
         {song.genre && (
           <p className="m-0 text-xs text-white/50 capitalize tracking-wide">
             {song.genre}

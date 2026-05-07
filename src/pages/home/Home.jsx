@@ -6,14 +6,16 @@ import SearchBar from "../../components/SearchBar/SearchBar";
 import FilterSong from "../../components/FilterSong/FilterSong";
 import AsyncState from "../../components/AsyncState/AsyncState";
 import SongCard from "../../components/SongCard/SongCard";
+import { isYouTubeEmbeddable } from "../../utils/youtubeValidation";
 import styles from "./Home.module.css";
 
-function Home() {
+function Home({ onSelectSong }) {
   const { t } = useTranslation();
   const [songs, setSongs] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState({ genre: "" });
   const [allGenres, setAllGenres] = useState([]);
+  const [embeddableBySongId, setEmbeddableBySongId] = useState({});
   const [genresError, setGenresError] = useState("");
   const { loading, error, runTask } = useAsyncStatus();
   const isSearching = searchTerm.trim().length > 0;
@@ -53,6 +55,38 @@ function Home() {
 
     return () => clearTimeout(timer);
   }, [searchTerm, filters.genre, fetchSongs]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const validateEmbeddableSongs = async () => {
+      if (!songs.length) {
+        if (isMounted) {
+          setEmbeddableBySongId({});
+        }
+        return;
+      }
+
+      const validations = await Promise.all(
+        songs.map(async (song) => {
+          const isEmbeddable = await isYouTubeEmbeddable(song.youtubeId);
+          return [song.id, isEmbeddable];
+        })
+      );
+
+      if (!isMounted) {
+        return;
+      }
+
+      setEmbeddableBySongId(Object.fromEntries(validations));
+    };
+
+    validateEmbeddableSongs();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [songs]);
 
   useEffect(() => {
     const fetchGenres = async () => {
@@ -115,7 +149,12 @@ function Home() {
         {songs.length > 0 && (
           <div className={styles.cardsGrid}>
             {songs.map((song) => (
-              <SongCard key={song.id} song={song} />
+              <SongCard
+                key={song.id}
+                song={song}
+                isEmbeddable={embeddableBySongId[song.id] ?? true}
+                onSelectSong={onSelectSong}
+              />
             ))}
           </div>
         )}

@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { songsService } from "../../services/songsService";
 import AsyncState from "../AsyncState/AsyncState";
 
-function SongDetails() {
+function SongDetails({ onSelectSong }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const [song, setSong] = useState(null);
@@ -54,8 +54,9 @@ function SongDetails() {
   };
 
   const handlePlay = () => {
-    // TODO: Implementar reproducción
-    console.log("Reproduciendo:", song.name);
+    if (song && typeof onSelectSong === "function") {
+      onSelectSong(song, { autoplay: true });
+    }
   };
 
   return (

@@ -6,6 +6,10 @@
     "error": "Error",
     "back": "Volver"
   },
+  "app": {
+    "songNotFound": "\"{{songName}}\" no fue encontrada para reproducir.",
+    "alternativeSongPlaying": "\"{{originalName}}\" no fue encontrada para reproducir. Reproduciendo alternativa de {{artistName}}."
+  },
   "nav": {
     "home": "Inicio",
     "favorites": "Favoritos"
@@ -44,7 +48,11 @@
   },
   "player": {
     "noSongSelected": "Sin ninguna canción seleccionada",
-    "volume": "Vol"
+    "volume": "Vol",
+    "youtubeApiError": "No se pudo cargar YouTube API.",
+    "videoUnavailable": "Este video no está disponible para reproducir.",
+    "audioLoadError": "No se pudo cargar el audio de esta canción.",
+    "tryYoutubeFallback": "Toca Play para abrir una alternativa en YouTube."
   },
   "footer": {
     "brandSubtitle": "Tu aplicación de música favorita.",
