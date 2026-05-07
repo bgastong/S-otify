@@ -62,7 +62,7 @@ function SongDetails({ onSelectSong }) {
   };
 
   return (
-    <section className="min-h-screen bg-gradient-to-b from-[#1e1e2e] to-[#0f0f1e] py-8 px-4">
+    <section className="min-h-screen bg-black py-8 px-4">
       <div className="max-w-4xl mx-auto">
         <button
           onClick={() => navigate(-1)}
@@ -82,9 +82,9 @@ function SongDetails({ onSelectSong }) {
         />
 
         {song && (
-          <div className="rounded-2xl border border-white/10 bg-gradient-to-b from-[#252535]/50 to-[#1a1a2e]/50 overflow-hidden backdrop-blur-sm">
+          <div className="rounded-2xl border border-white/10 bg-zinc-900/50 overflow-hidden backdrop-blur-sm">
             {/* Header con imagen de fondo */}
-            <div className="relative h-64 md:h-96 overflow-hidden bg-gradient-to-br from-[#1e1e2e] to-[#0f0f1e]">
+            <div className="relative h-64 md:h-96 overflow-hidden bg-gradient-to-br from-zinc-900 to-black">
               {!imageError && song.image ? (
                 <img
                   src={song.image}
@@ -93,11 +93,11 @@ function SongDetails({ onSelectSong }) {
                   onError={() => setImageError(true)}
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-white/20 text-8xl">
+                <div className="w-full h-full flex items-center justify-center text-zinc-700 text-8xl">
                   ♪
                 </div>
               )}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a2e] via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-transparent to-transparent" />
             </div>
 
             {/* Contenido principal */}
@@ -114,7 +114,7 @@ function SongDetails({ onSelectSong }) {
                         onError={() => setImageError(true)}
                       />
                     ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-[#2d2d44] to-[#1e1e2e] flex items-center justify-center text-white/30 text-5xl">
+                      <div className="w-full h-full bg-zinc-800 flex items-center justify-center text-zinc-600 text-5xl">
                         ♪
                       </div>
                     )}
@@ -142,14 +142,14 @@ function SongDetails({ onSelectSong }) {
                   <div className="flex flex-col sm:flex-row gap-3 mt-8">
                     <button
                       onClick={handlePlay}
-                      className="flex-1 px-6 py-3 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white font-semibold rounded-lg hover:from-indigo-700 hover:to-indigo-600 transition-all duration-300 shadow-lg hover:shadow-indigo-500/50 flex items-center justify-center gap-2"
+                      className="flex-1 px-6 py-3 bg-green-500 text-black font-semibold rounded-full hover:bg-green-400 hover:scale-105 active:scale-95 transition-all duration-200 shadow-lg shadow-green-500/30 flex items-center justify-center gap-2"
                     >
                       <span className="text-lg">▶</span>
                       {t('details.play')}
                     </button>
                     <button
                       onClick={handleAddToFavorites}
-                      className="flex-1 px-6 py-3 bg-white/10 text-white font-semibold rounded-lg hover:bg-white/20 transition-colors duration-300 border border-white/20 flex items-center justify-center gap-2"
+                      className="flex-1 px-6 py-3 bg-white/10 text-white font-semibold rounded-full hover:bg-white/20 hover:scale-105 active:scale-95 transition-all duration-200 border border-white/10 flex items-center justify-center gap-2"
                     >
                       <span className="text-lg">♡</span>
                       {t('details.addToFavorites')}
