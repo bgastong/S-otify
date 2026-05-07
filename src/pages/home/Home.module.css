@@ -5,7 +5,7 @@
 }
 
 .surface {
-	@apply relative overflow-hidden rounded-2xl border border-zinc-800/80 bg-linear-to-b from-zinc-800/75 via-zinc-900 to-black p-5 md:p-8;
+	@apply relative rounded-2xl border border-zinc-800/80 bg-linear-to-b from-zinc-800/75 via-zinc-900 to-black p-5 md:p-8;
 	box-shadow: var(--inset-highlight), 0 40px 80px rgba(0, 0, 0, 0.35);
 }
 
