@@ -1,0 +1,57 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "retry": "Retry",
+    "noResults": "No results.",
+    "error": "Error",
+    "back": "Go back"
+  },
+  "nav": {
+    "home": "Home",
+    "favorites": "Favorites"
+  },
+  "home": {
+    "pageTitle": "Home",
+    "eyebrow": "HOME",
+    "title": "All your music, in one place",
+    "subtitle": "Search song by song or artist, and filter by genre instantly.",
+    "searchPlaceholder": "Search by song or artist...",
+    "searchLabel": "Search by song or artist",
+    "filterGenre": "Genre",
+    "filterAllGenres": "All genres",
+    "sectionTitle": "Songs for you",
+    "sectionSubtitle": "Dynamic results from API based on search and genre.",
+    "loadingMessage": "Loading songs...",
+    "emptyMessage": "No songs found for your search.",
+    "errorMessage": "An error occurred while loading songs.",
+    "genresError": "Could not load genres."
+  },
+  "favorites": {
+    "pageTitle": "Your favorites",
+    "eyebrow": "Your library",
+    "title": "Your favorites",
+    "body": "Quick access to what you listen to most.",
+    "emptyTitle": "You haven't saved any songs yet",
+    "emptyText": "Mark songs as favorites and they will appear in this section.",
+    "exploreLink": "Explore songs"
+  },
+  "details": {
+    "eyebrow": "Detail",
+    "title": "Song view",
+    "description": "This screen is ready for Fabrizio's integration: fetch by id, error handling and final data rendering.",
+    "integrationPending": "Integration pending",
+    "integrationNote": "Do not implement final logic in this branch to avoid conflicts with assigned tasks."
+  },
+  "player": {
+    "noSongSelected": "No song selected",
+    "volume": "Vol"
+  },
+  "footer": {
+    "brandSubtitle": "Your favorite music app.",
+    "linksTitle": "Links",
+    "teamTitle": "Team",
+    "contactTitle": "Contact",
+    "contactEmail": "info@snortify.com",
+    "copyright": "© 2026 {appName} - All rights reserved"
+  }
+}

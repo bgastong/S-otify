@@ -1,0 +1,57 @@
+{
+  "common": {
+    "loading": "Cargando...",
+    "retry": "Reintentar",
+    "noResults": "No hay resultados.",
+    "error": "Error",
+    "back": "Volver"
+  },
+  "nav": {
+    "home": "Inicio",
+    "favorites": "Favoritos"
+  },
+  "home": {
+    "pageTitle": "Inicio",
+    "eyebrow": "INICIO",
+    "title": "Toda tu música, en un solo lugar",
+    "subtitle": "Busca letra a letra por canción o artista, y filtra por género al instante.",
+    "searchPlaceholder": "Buscar por canción o artista...",
+    "searchLabel": "Buscar por canción o artista",
+    "filterGenre": "Género",
+    "filterAllGenres": "Todos los géneros",
+    "sectionTitle": "Canciones para vos",
+    "sectionSubtitle": "Resultados dinámicos desde API según búsqueda y género.",
+    "loadingMessage": "Cargando canciones...",
+    "emptyMessage": "No se encontraron canciones para tu búsqueda.",
+    "errorMessage": "Ocurrió un error al cargar las canciones.",
+    "genresError": "No se pudieron cargar los géneros."
+  },
+  "favorites": {
+    "pageTitle": "Tus favoritos",
+    "eyebrow": "Tu biblioteca",
+    "title": "Tus favoritos",
+    "body": "Accesos rápidos a lo que más escuchas.",
+    "emptyTitle": "Todavía no guardaste canciones",
+    "emptyText": "Marca favoritos y van a aparecer en esta sección.",
+    "exploreLink": "Explorar canciones"
+  },
+  "details": {
+    "eyebrow": "Detalle",
+    "title": "Vista de canción",
+    "description": "Esta pantalla queda lista para la integración de Fabrizio: fetch por id, manejo de error y render final de datos.",
+    "integrationPending": "Integración pendiente",
+    "integrationNote": "No implementar lógica final en esta rama para evitar conflictos con tareas asignadas."
+  },
+  "player": {
+    "noSongSelected": "Sin ninguna canción seleccionada",
+    "volume": "Vol"
+  },
+  "footer": {
+    "brandSubtitle": "Tu aplicación de música favorita.",
+    "linksTitle": "Enlaces",
+    "teamTitle": "Equipo",
+    "contactTitle": "Contacto",
+    "contactEmail": "info@snortify.com",
+    "copyright": "© 2026 {appName} - Todos los derechos reservados"
+  }
+}
