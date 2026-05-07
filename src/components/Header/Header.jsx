@@ -59,7 +59,7 @@ function Header() {
             <Link 
               key={item.to} 
               to={item.to} 
-              className="text-sm font-semibold text-gray-300 hover:text-orange-500 transition-colors"
+              className="text-sm font-semibold text-gray-300 hover:text-green-600 transition-colors"
             >
               {item.key ? t(item.key) : item.label}
             </Link>
