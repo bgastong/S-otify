@@ -1,4 +1,5 @@
 import { useCallback, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/home/Home.jsx";
 import Details from "./pages/details/Details.jsx";
@@ -11,6 +12,7 @@ import { songsService } from "./services/songsService";
 import { isYouTubeEmbeddable } from "./utils/youtubeValidation";
 
 function App() {
+  const { t } = useTranslation();
   const [selectedSong, setSelectedSong] = useState(null);
   const [playerNotice, setPlayerNotice] = useState("");
   const [playRequestId, setPlayRequestId] = useState(0);
@@ -82,7 +84,7 @@ function App() {
 
       if (alternative) {
         setSelectedSong(alternative);
-        setPlayerNotice(`"${song.name}" no fue encontrada para reproducir. Reproduciendo alternativa de ${song.artist}.`);
+        setPlayerNotice(t('app.alternativeSongPlaying', { originalName: song.name, artistName: song.artist }));
         if (shouldAutoplay) {
           setPlayRequestId((prev) => prev + 1);
         }
@@ -92,7 +94,7 @@ function App() {
       // Si falla la busqueda de alternativa, se mantiene la cancion original.
     }
 
-    setPlayerNotice(`"${song.name}" no fue encontrada para reproducir.`);
+    setPlayerNotice(t('app.songNotFound', { songName: song.name }));
   }, [findEmbeddableAlternative]);
 
   return (
@@ -112,7 +114,7 @@ function App() {
         <Player
           audioUrl={selectedSong?.audioUrl || ""}
           youtubeId={selectedSong?.youtubeId || ""}
-          title={selectedSong?.name || "Sin ninguna cancion seleccionada"}
+          title={selectedSong?.name || ""}
           artist={selectedSong?.artist || ""}
           notice={playerNotice}
           playRequestId={playRequestId}

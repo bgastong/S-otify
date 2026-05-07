@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const Pause = () => (
     <svg role="img" height="16" width="16" aria-hidden="true" viewBox="0 0 16 16" fill="currentColor">
@@ -40,7 +41,7 @@ function loadYouTubeApi() {
     const script = document.createElement("script");
     script.src = YT_API_URL;
     script.async = true;
-    script.onerror = () => reject(new Error("No se pudo cargar YouTube API."));
+    script.onerror = () => reject(new Error("YouTube API Error"));
     document.body.appendChild(script);
     });
 
@@ -57,11 +58,12 @@ function formatTime(time) {
 function Player({
     audioUrl = "",
     youtubeId = "",
-    title = "Sin ninguna cancion seleccionada",
+    title = "",
     artist = "",
     notice = "",
     playRequestId = 0,
 }) {
+    const { t } = useTranslation();
     const audioRef = useRef(null);
     const ytContainerRef = useRef(null);
     const ytPlayerRef = useRef(null);
@@ -120,7 +122,7 @@ function Player({
                 }
             },
             onError: () => {
-                setPlayerError("Este video no está disponible para reproducir.");
+                setPlayerError(t('player.videoUnavailable'));
                 setErrorSourceKey(sourceKey);
                 setIsPlaying(false);
             },
@@ -191,7 +193,7 @@ function Player({
     if (useAudio && audioRef.current) {
         audioRef.current.play().catch(() => {
         setAudioFailedSourceKey(sourceKey);
-        setPlayerError("No se pudo cargar el audio de esta canción.");
+        setPlayerError(t('player.audioLoadError'));
         setErrorSourceKey(sourceKey);
         });
         return;
@@ -222,7 +224,7 @@ function Player({
 
         audioRef.current.play().catch(() => {
         setAudioFailedSourceKey(sourceKey);
-        setPlayerError("No se pudo cargar el audio de esta canción.");
+        setPlayerError(t('player.audioLoadError'));
         setErrorSourceKey(sourceKey);
         });
         return;
@@ -287,7 +289,7 @@ function Player({
         }}
         onError={() => {
             setAudioFailedSourceKey(sourceKey);
-            setPlayerError("No se pudo cargar el audio de esta canción.");
+            setPlayerError(t('player.audioLoadError'));
             setErrorSourceKey(sourceKey);
             setIsPlaying(false);
         }}
@@ -302,7 +304,7 @@ function Player({
 
         <div className="grid h-12 w-full grid-cols-[1fr_auto_1fr] items-center gap-4">
         <div className="min-w-0 self-end flex flex-col justify-center pb-1">
-            <p className="text-sm font-semibold">{title}</p>
+            <p className="text-sm font-semibold">{title || t('player.noSongSelected')}</p>
             <p className="text-xs text-gray-400">{artist}</p>
         </div>
 
@@ -317,7 +319,7 @@ function Player({
         </div>
 
         <div className="flex self-end items-center justify-end gap-2 pb-1">
-            <span className="text-xs text-gray-400">Vol</span>
+            <span className="text-xs text-gray-400">{t('player.volume')}</span>
             <input
             type="range"
             min="0"
@@ -347,8 +349,7 @@ function Player({
 
         {uiError && (
         <p className="mx-auto w-[65%] text-xs text-amber-300">
-            {uiError}
-            {playerError && !useAudio ? " Toca Play para abrir una alternativa en YouTube." : ""}
+            {uiError}{playerError && !useAudio ? ` ${t('player.tryYoutubeFallback')}` : ""}
         </p>
         )}
     </div>
