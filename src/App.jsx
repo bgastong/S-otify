@@ -6,7 +6,7 @@ import Favorites from "./pages/favorites/Favorites.jsx";
 import Header from "./components/Header/Header.jsx";
 import Footer from "./components/Footer/Footer.jsx";
 import LayoutShell from "./components/LayoutShell/LayoutShell.jsx";
-import Player from "./components/Player.jsx";
+import Player from "./components/Player/Player.jsx";
 
 function App() {
   const [selectedSong, setSelectedSong] = useState(null);
@@ -30,13 +30,21 @@ function App() {
 
   return (
     <BrowserRouter>
-      <div className="min-h-screen flex flex-col bg-[#000000] text-white">
+      <div 
+        className="min-h-screen flex flex-col text-white overflow-x-hidden relative"
+        style={{
+          backgroundColor: '#000000',
+          backgroundImage: `
+            radial-gradient(circle at top left, rgba(10, 35, 10, 0.7) 0%, transparent 45%),
+            radial-gradient(circle at top right, rgba(10, 35, 10, 0.7) 0%, transparent 45%),
+            linear-gradient(180deg, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.95) 100%)
+            `,
+            backgroundAttachment: 'fixed',
+            backgroundSize: 'cover'
+}}
+      >
         <Header />
-
-        {/* CONTENIDO PRINCIPAL: 
-            Aquí aplicamos pt-28 (padding top) para empujar el contenido debajo de la Navbar
-            y pb-32 (padding bottom) para que el Player no tape el final de las listas. */}
-        <main className="flex-grow pt-28 md:pt-32 pb-36">
+        <main className="grow pt-28 md:pt-32 pb-36">
           <LayoutShell>
             <Routes>
               <Route path="/" element={<Home onSelectSong={handleSelectSong} />} />
