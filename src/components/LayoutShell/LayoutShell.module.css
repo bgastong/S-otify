@@ -5,7 +5,7 @@
 }
 
 .glassContainer {
-    @apply relative overflow-hidden shadow-2xl transition-all duration-500;
+    @apply relative shadow-2xl transition-all duration-500;
     
     @apply rounded-[2.5rem] border border-white/10 bg-white/[0.02] backdrop-blur-2xl;
     

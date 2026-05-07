@@ -74,7 +74,7 @@ function Home({ searchTerm = "", currentGenre = "" }) {
           });
         }
       },
-      { threshold: 0.1 }
+      { rootMargin: '100px', threshold: 0 }
     );
 
     if (observerRef.current) {
@@ -104,7 +104,7 @@ cad
           isEmpty={!loading && !error && songs.length === 0}
           loadingMessage={t('home.loadingMessage')}
           emptyMessage={t('home.emptyMessage')}
-          onRetry={() => fetchSongs(searchTerm, filters.genre)}
+          onRetry={() => fetchSongs(searchTerm, currentGenre)}
         />
 
         {!isSearching && (
@@ -119,9 +119,11 @@ cad
             {songs.map((song) => (
               <SongCard key={song.id} song={song} />
             ))}
-            <div ref={observerRef} style={{ height: '1px' }} />
           </div>
         )}
+        
+        {/* Sentinel fuera del grid para que sea detectable */}
+        <div ref={observerRef} className="h-8 w-full" />
         
         {loadingMore && (
           <div style={{ textAlign: 'center', padding: '2rem', color: '#888' }}>
