@@ -40,12 +40,12 @@ function Header() {
     >
       <nav className="
         w-full max-w-7xl flex items-center justify-between
-        h-20 px-8 bg-[#09090B]/90 backdrop-blur-md
+        h-24 px-10 bg-[#09090B]/90 backdrop-blur-md
         border border-[#09090B]/90 rounded-full shadow-2xl
       ">
         {/*Logo */}
         <Link to="/" className="flex items-center gap-2 group flex-1">
-          <div className="w-8 h-8 flex items-center justify-center">
+          <div className="w-14 h-14 flex items-center justify-center">
             <img src="/logo (2).png" alt="Logo" className="w-full h-full object-contain" />
           </div>
           <span className="text-lg font-black italic tracking-tighter text-white uppercase">
@@ -59,7 +59,7 @@ function Header() {
             <Link 
               key={item.to} 
               to={item.to} 
-              className="text-sm font-semibold text-gray-300 hover:text-green-600 transition-colors"
+              className="text-base font-semibold text-gray-300 hover:text-green-600 transition-colors"
             >
               {item.key ? t(item.key) : item.label}
             </Link>
