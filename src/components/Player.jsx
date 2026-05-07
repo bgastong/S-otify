@@ -1,40 +1,40 @@
 import { useEffect, useRef, useState } from "react";
 
 const Pause = () => (
-  <svg role="img" height="16" width="16" aria-hidden="true" viewBox="0 0 16 16" fill="currentColor">
+    <svg role="img" height="16" width="16" aria-hidden="true" viewBox="0 0 16 16" fill="currentColor">
     <path d="M2.7 1.3A.7.7 0 0 1 3.4 2v12a.7.7 0 0 1-1.4 0V2a.7.7 0 0 1 .7-.7Zm9.9 0a.7.7 0 0 1 .7.7v12a.7.7 0 0 1-1.4 0V2a.7.7 0 0 1 .7-.7Z" />
-  </svg>
+    </svg>
 );
 
 const Play = () => (
-  <svg role="img" height="16" width="16" aria-hidden="true" viewBox="0 0 16 16" fill="currentColor">
+    <svg role="img" height="16" width="16" aria-hidden="true" viewBox="0 0 16 16" fill="currentColor">
     <path d="M3 1.7a.7.7 0 0 1 1.05-.6l10 6.3a.7.7 0 0 1 0 1.2l-10 6.3A.7.7 0 0 1 3 14.3V1.7Z" />
-  </svg>
+    </svg>
 );
 
 const YT_API_URL = "https://www.youtube.com/iframe_api";
 let ytApiPromise;
 
 function loadYouTubeApi() {
-  if (window.YT?.Player) {
+    if (window.YT?.Player) {
     return Promise.resolve(window.YT);
-  }
+    }
 
-  if (ytApiPromise) {
+    if (ytApiPromise) {
     return ytApiPromise;
-  }
+    }
 
-  ytApiPromise = new Promise((resolve, reject) => {
+    ytApiPromise = new Promise((resolve, reject) => {
     const prevReady = window.onYouTubeIframeAPIReady;
 
     window.onYouTubeIframeAPIReady = () => {
-      prevReady?.();
-      resolve(window.YT);
+        prevReady?.();
+        resolve(window.YT);
     };
 
     const existingScript = document.querySelector(`script[src="${YT_API_URL}"]`);
     if (existingScript) {
-      return;
+        return;
     }
 
     const script = document.createElement("script");
@@ -42,316 +42,317 @@ function loadYouTubeApi() {
     script.async = true;
     script.onerror = () => reject(new Error("No se pudo cargar YouTube API."));
     document.body.appendChild(script);
-  });
+    });
 
-  return ytApiPromise;
+    return ytApiPromise;
 }
 
 function formatTime(time) {
-  if (!time) return "0:00";
-  const minutes = Math.floor(time / 60);
-  const seconds = Math.floor(time % 60).toString().padStart(2, "0");
-  return `${minutes}:${seconds}`;
+    if (!time) return "0:00";
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60).toString().padStart(2, "0");
+    return `${minutes}:${seconds}`;
 }
 
 function Player({
-  audioUrl = "",
-  youtubeId = "",
-  title = "Sin ninguna cancion seleccionada",
-  artist = "",
-  notice = "",
-  playRequestId = 0,
+    audioUrl = "",
+    youtubeId = "",
+    title = "Sin ninguna cancion seleccionada",
+    artist = "",
+    notice = "",
+    playRequestId = 0,
 }) {
-  const audioRef = useRef(null);
-  const ytContainerRef = useRef(null);
-  const ytPlayerRef = useRef(null);
+    const audioRef = useRef(null);
+    const ytContainerRef = useRef(null);
+    const ytPlayerRef = useRef(null);
 
-  const [duration, setDuration] = useState(0);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [volume, setVolume] = useState(1);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isReady, setIsReady] = useState(false);
-  const [playerError, setPlayerError] = useState("");
-  const [errorSourceKey, setErrorSourceKey] = useState("");
-  const [audioFailedSourceKey, setAudioFailedSourceKey] = useState("");
+    const [duration, setDuration] = useState(0);
+    const [currentTime, setCurrentTime] = useState(0);
+    const [volume, setVolume] = useState(1);
+    const [isPlaying, setIsPlaying] = useState(false);
+    const [isReady, setIsReady] = useState(false);
+    const [playerError, setPlayerError] = useState("");
+    const [errorSourceKey, setErrorSourceKey] = useState("");
+    const [audioFailedSourceKey, setAudioFailedSourceKey] = useState("");
 
-  const sourceKey = `${audioUrl}|${youtubeId}`;
-  const useAudio = Boolean(audioUrl) && audioFailedSourceKey !== sourceKey;
-  const hasTrack = useAudio ? Boolean(audioUrl) : Boolean(youtubeId);
+    const sourceKey = `${audioUrl}|${youtubeId}`;
+    const useAudio = Boolean(audioUrl) && audioFailedSourceKey !== sourceKey;
+    const hasTrack = useAudio ? Boolean(audioUrl) : Boolean(youtubeId);
 
-  useEffect(() => {
-    setPlayerError("");
-    setDuration(0);
-    setCurrentTime(0);
-    setIsPlaying(false);
-  }, [sourceKey]);
+    useEffect(() => {
+        setPlayerError("");
+        setDuration(0);
+        setCurrentTime(0);
+        setIsPlaying(false);
+    }, [sourceKey]);
 
-  useEffect(() => {
+    useEffect(() => {
     let mounted = true;
 
     loadYouTubeApi()
-      .then(() => {
+        .then(() => {
         if (!mounted || ytPlayerRef.current || !ytContainerRef.current) {
-          return;
+        return;
         }
 
         ytPlayerRef.current = new window.YT.Player(ytContainerRef.current, {
-          height: "200",
-          width: "200",
-          videoId: "",
-          playerVars: {
-            autoplay: 0,
-            controls: 0,
-            rel: 0,
-            playsinline: 1,
-            origin: window.location.origin,
-          },
-          events: {
+                height: "200",
+                width: "200",
+                videoId: "",
+                playerVars: {
+                autoplay: 0,
+                controls: 0,
+                rel: 0,
+                playsinline: 1,
+                origin: window.location.origin,
+            },
+            events: {
             onReady: () => {
-              if (mounted) setIsReady(true);
+                if (mounted) setIsReady(true);
             },
             onStateChange: (event) => {
-              const states = window.YT.PlayerState;
-              if (event.data === states.PLAYING) setIsPlaying(true);
-              if (event.data === states.PAUSED) setIsPlaying(false);
-              if (event.data === states.ENDED) {
+                const states = window.YT.PlayerState;
+                if (event.data === states.PLAYING) setIsPlaying(true);
+                if (event.data === states.PAUSED) setIsPlaying(false);
+                if (event.data === states.ENDED) {
                 setIsPlaying(false);
                 setCurrentTime(0);
-              }
+                }
             },
             onError: () => {
-              setPlayerError("Este video no está disponible para reproducir.");
-              setErrorSourceKey(sourceKey);
-              setIsPlaying(false);
+                setPlayerError("Este video no está disponible para reproducir.");
+                setErrorSourceKey(sourceKey);
+                setIsPlaying(false);
             },
-          },
+        },
         });
-      })
-      .catch(() => {
+    })
+    .catch(() => {
         setIsReady(false);
-      });
+    });
 
     return () => {
-      mounted = false;
+        mounted = false;
     };
-  }, [sourceKey]);
+}, [sourceKey]);
 
-  useEffect(() => {
+    useEffect(() => {
     if (useAudio) {
-      ytPlayerRef.current?.stopVideo?.();
-      return;
+        ytPlayerRef.current?.stopVideo?.();
+        return;
     }
 
     if (!isReady || !ytPlayerRef.current) {
-      return;
+        return;
     }
 
     if (!youtubeId) {
-      ytPlayerRef.current.stopVideo();
-      return;
+        ytPlayerRef.current.stopVideo();
+        return;
     }
 
     ytPlayerRef.current.cueVideoById(youtubeId);
-  }, [useAudio, youtubeId, isReady, sourceKey]);
+    }, [useAudio, youtubeId, isReady, sourceKey]);
 
-  useEffect(() => {
+    useEffect(() => {
     if (useAudio && audioRef.current) {
-      audioRef.current.volume = volume;
-      return;
+        audioRef.current.volume = volume;
+        return;
     }
 
     if (!useAudio && isReady && ytPlayerRef.current) {
       ytPlayerRef.current.setVolume(volume * 100);
     }
-  }, [volume, useAudio, isReady]);
+    }, [volume, useAudio, isReady]);
 
-  useEffect(() => {
+    useEffect(() => {
     if (useAudio || !isReady || !ytPlayerRef.current || !youtubeId) {
-      return;
+        return;
     }
 
     const timer = setInterval(() => {
-      const player = ytPlayerRef.current;
-      if (!player?.getCurrentTime || !player?.getDuration) {
+        const player = ytPlayerRef.current;
+        if (!player?.getCurrentTime || !player?.getDuration) {
         return;
-      }
+    }
 
-      setCurrentTime(player.getCurrentTime() || 0);
-      setDuration(player.getDuration() || 0);
+        setCurrentTime(player.getCurrentTime() || 0);
+        setDuration(player.getDuration() || 0);
     }, 500);
 
     return () => clearInterval(timer);
-  }, [useAudio, isReady, youtubeId]);
+    }, [useAudio, isReady, youtubeId]);
 
-  useEffect(() => {
+    useEffect(() => {
     if (!playRequestId || !hasTrack) {
-      return;
+        return;
     }
 
     if (useAudio && audioRef.current) {
-      audioRef.current.play().catch(() => {
+        audioRef.current.play().catch(() => {
         setAudioFailedSourceKey(sourceKey);
         setPlayerError("No se pudo cargar el audio de esta canción.");
         setErrorSourceKey(sourceKey);
-      });
-      return;
+        });
+        return;
     }
 
     if (!useAudio && isReady && ytPlayerRef.current && !playerError) {
-      ytPlayerRef.current.playVideo();
+        ytPlayerRef.current.playVideo();
     }
-  }, [playRequestId, hasTrack, useAudio, isReady, playerError, sourceKey]);
+    }, [playRequestId, hasTrack, useAudio, isReady, sourceKey]);
 
-  useEffect(() => {
+    useEffect(() => {
     return () => {
-      ytPlayerRef.current?.destroy?.();
+        ytPlayerRef.current?.destroy?.();
     };
-  }, []);
+    }, []);
 
-  const handlePlayPause = () => {
+    const handlePlayPause = () => {
     if (!hasTrack) {
-      return;
+        return;
     }
 
     if (useAudio && audioRef.current) {
-      if (isPlaying) {
+        if (isPlaying) {
         audioRef.current.pause();
         setIsPlaying(false);
         return;
-      }
+        }
 
-      audioRef.current.play().catch(() => {
+        audioRef.current.play().catch(() => {
         setAudioFailedSourceKey(sourceKey);
         setPlayerError("No se pudo cargar el audio de esta canción.");
         setErrorSourceKey(sourceKey);
-      });
-      return;
+        });
+        return;
     }
 
     if (!ytPlayerRef.current) {
-      return;
+        return;
     }
 
     if (playerError) {
-      const query = `${title} ${artist}`.trim();
-      const fallbackUrl = query
+        const query = `${title} ${artist}`.trim();
+        const fallbackUrl = query
         ? `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`
         : `https://www.youtube.com/watch?v=${youtubeId}`;
-      window.open(fallbackUrl, "_blank", "noopener,noreferrer");
-      return;
+        window.open(fallbackUrl, "_blank", "noopener,noreferrer");
+        return;
     }
 
     if (isPlaying) {
-      ytPlayerRef.current.pauseVideo();
+        ytPlayerRef.current.pauseVideo();
     } else {
-      ytPlayerRef.current.playVideo();
+        ytPlayerRef.current.playVideo();
     }
-  };
+    };
 
-  const handleSeek = (event) => {
+    const handleSeek = (event) => {
     if (!hasTrack) {
-      return;
+        return;
     }
 
     const time = Number(event.target.value);
 
     if (useAudio && audioRef.current) {
-      audioRef.current.currentTime = time;
-      setCurrentTime(time);
-      return;
+        audioRef.current.currentTime = time;
+        setCurrentTime(time);
+        return;
     }
 
     ytPlayerRef.current?.seekTo?.(time, true);
     setCurrentTime(time);
-  };
+    };
 
-  const uiError = (errorSourceKey === sourceKey ? playerError : "") || notice;
+    const uiError = (errorSourceKey === sourceKey ? playerError : "") || notice;
 
-  return (
+    return (
     <div className="fixed bottom-0 left-0 z-50 flex w-full flex-col gap-1 bg-black px-4 py-2 text-white">
-      <audio
+        <audio
         ref={audioRef}
         src={useAudio ? audioUrl : ""}
         onLoadedMetadata={() => {
-          if (!audioRef.current) return;
-          setDuration(audioRef.current.duration || 0);
+            if (!audioRef.current) return;
+            setDuration(audioRef.current.duration || 0);
         }}
         onTimeUpdate={() => {
-          if (!audioRef.current) return;
-          setCurrentTime(audioRef.current.currentTime || 0);
-          setIsPlaying(!audioRef.current.paused);
+            if (!audioRef.current) return;
+            setCurrentTime(audioRef.current.currentTime || 0);
+            setIsPlaying(!audioRef.current.paused);
         }}
         onEnded={() => {
-          setIsPlaying(false);
-          setCurrentTime(0);
+            setIsPlaying(false);
+            setCurrentTime(0);
         }}
         onError={() => {
-          setAudioFailedSourceKey(sourceKey);
-          setPlayerError("No se pudo cargar el audio de esta canción.");
-          setErrorSourceKey(sourceKey);
-          setIsPlaying(false);
+            setAudioFailedSourceKey(sourceKey);
+            setPlayerError("No se pudo cargar el audio de esta canción.");
+            setErrorSourceKey(sourceKey);
+            setIsPlaying(false);
         }}
         className="hidden"
         preload="metadata"
-      />
+        />
 
-      <div
+        <div
         ref={ytContainerRef}
-        className="pointer-events-none absolute -left-2499.75 top-0 h-50 w-50 opacity-0"
-      />
+        className="pointer-events-none absolute left-[-9999px] top-0 h-[200px] w-[200px] opacity-0"
+        />
 
-      <div className="grid h-12 w-full grid-cols-[1fr_auto_1fr] items-center gap-4">
+        <div className="grid h-12 w-full grid-cols-[1fr_auto_1fr] items-center gap-4">
         <div className="min-w-0 self-end flex flex-col justify-center pb-1">
-          <p className="text-sm font-semibold">{title}</p>
-          <p className="text-xs text-gray-400">{artist}</p>
+            <p className="text-sm font-semibold">{title}</p>
+            <p className="text-xs text-gray-400">{artist}</p>
         </div>
 
         <div className="flex self-center justify-center">
-          <button
+            <button
             disabled={!hasTrack || (!useAudio && !isReady)}
             onClick={handlePlayPause}
             className="rounded-full bg-white p-2.5 text-black disabled:cursor-not-allowed disabled:opacity-40"
-          >
+            >
             {isPlaying ? <Pause /> : <Play />}
-          </button>
+            </button>
         </div>
 
         <div className="flex self-end items-center justify-end gap-2 pb-1">
-          <span className="text-xs text-gray-400">Vol</span>
-          <input
+            <span className="text-xs text-gray-400">Vol</span>
+            <input
             type="range"
             min="0"
             max="1"
             step="0.01"
             value={volume}
             onChange={(event) => setVolume(Number(event.target.value))}
-            className="w-24 cursor-pointer accent-green-500"
-          />
+            className="w-24 cursor-pointer accent-white"
+            style={{ height: '2px' }}
+            />
         </div>
-      </div>
+        </div>
 
-      <div className="mx-auto flex w-[65%] items-center gap-2">
+        <div className="mx-auto flex w-[65%] items-center gap-2">
         <span className="text-xs text-gray-400">{formatTime(currentTime)}</span>
         <input
-          type="range"
-          min="0"
-          max={duration || 0}
-          value={currentTime}
-          onChange={handleSeek}
-          disabled={!hasTrack || (!useAudio && !isReady)}
-          className="h-1 flex-1 cursor-pointer accent-green-500 disabled:cursor-not-allowed disabled:opacity-40"
+            type="range"
+            min="0"
+            max={duration || 0}
+            value={currentTime}
+            onChange={handleSeek}
+            disabled={!hasTrack || (!useAudio && !isReady)}
+            className="h-1 flex-1 cursor-pointer accent-green-500 disabled:cursor-not-allowed disabled:opacity-40"
         />
         <span className="text-xs text-gray-400">{formatTime(duration)}</span>
-      </div>
+        </div>
 
-      {uiError && (
+        {uiError && (
         <p className="mx-auto w-[65%] text-xs text-amber-300">
-          {uiError}
-          {playerError && !useAudio ? " Toca Play para abrir una alternativa en YouTube." : ""}
+            {uiError}
+            {playerError && !useAudio ? " Toca Play para abrir una alternativa en YouTube." : ""}
         </p>
-      )}
+        )}
     </div>
-  );
+    );
 }
 
 export default Player;
