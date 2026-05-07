@@ -69,10 +69,16 @@
   },
   "footer": {
     "brandSubtitle": "Tu aplicación de música favorita.",
-    "linksTitle": "Enlaces",
+    "brandTagline": "Tu música, tu manera.",
+    "madeWithLove": "Hecho con ♡ por estudiantes",
+    "linksTitle": "Navegación",
     "teamTitle": "Equipo",
     "contactTitle": "Contacto",
+    "connectTitle": "Conecta",
     "contactEmail": "info@snortify.com",
-    "copyright": "© 2026 {appName} - Todos los derechos reservados"
+    "viewOnGitHub": "Ver en GitHub",
+    "github": "GitHub",
+    "spotifyInspired": "Inspirado en Spotify",
+    "copyright": "© {{year}} {{appName}} - Todos los derechos reservados"
   }
 }
