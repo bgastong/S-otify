@@ -98,7 +98,8 @@ async function searchOnDeezer(artist, title) {
       return {
         image: track.album?.cover_big || track.album?.cover_medium || track.artist?.picture_big,
         album: track.album?.title,
-        duration: Math.floor(track.duration / 60) + ":" + String(track.duration % 60).padStart(2, '0')
+        duration: Math.floor(track.duration / 60) + ":" + String(track.duration % 60).padStart(2, '0'),
+        audioUrl: track.preview || ""
       };
     }
   } catch (e) {
@@ -124,7 +125,8 @@ async function uploadSongs() {
       genre: song.genre,
       image: deezerData?.image || "https://via.placeholder.com/300x300?text=No+Image",
       album: deezerData?.album || "Unknown Album",
-      duration: deezerData?.duration || "0:00"
+      duration: deezerData?.duration || "0:00",
+      audioUrl: deezerData?.audioUrl || ""
     };
 
     try {
