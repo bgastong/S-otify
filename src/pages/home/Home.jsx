@@ -1,20 +1,14 @@
-import { useState, useEffect, useMemo, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { songsService } from "../../services/songsService";
 import useAsyncStatus from "../../hooks/useAsyncStatus";
-import SearchBar from "../../components/SearchBar/SearchBar";
-import FilterSong from "../../components/FilterSong/FilterSong";
 import AsyncState from "../../components/AsyncState/AsyncState";
 import SongCard from "../../components/SongCard/SongCard";
 import styles from "./Home.module.css";
 
-function Home() {
+function Home({ searchTerm = "", currentGenre = "" }) {
   const { t } = useTranslation();
   const [songs, setSongs] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filters, setFilters] = useState({ genre: "" });
-  const [allGenres, setAllGenres] = useState([]);
-  const [genresError, setGenresError] = useState("");
   const [hasMore, setHasMore] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const { loading, error, runTask } = useAsyncStatus();
@@ -62,11 +56,11 @@ function Home() {
     pageRef.current = 1;
     setHasMore(true);
     const timer = setTimeout(() => {
-      fetchSongs(searchTerm, filters.genre, 1, false);
+      fetchSongs(searchTerm, currentGenre, 1, false);
     }, 80);
 
     return () => clearTimeout(timer);
-  }, [searchTerm, filters.genre, fetchSongs]);
+  }, [searchTerm, currentGenre, fetchSongs]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -75,7 +69,7 @@ function Home() {
           setLoadingMore(true);
           const nextPage = pageRef.current + 1;
           pageRef.current = nextPage;
-          fetchSongs(searchTerm, filters.genre, nextPage, true).finally(() => {
+          fetchSongs(searchTerm, currentGenre, nextPage, true).finally(() => {
             setLoadingMore(false);
           });
         }
@@ -90,25 +84,7 @@ function Home() {
     return () => {
       observer.disconnect();
     };
-  }, [hasMore, loading, loadingMore, searchTerm, filters.genre, fetchSongs]);
-
-  useEffect(() => {
-    const fetchGenres = async () => {
-      try {
-        setGenresError("");
-        const list = await songsService.getSongs({ page: 1, limit: 100 });
-        const uniqueGenres = [...new Set(list.map((song) => song.genre).filter(Boolean))].sort();
-        setAllGenres(uniqueGenres);
-      } catch {
-        setAllGenres([]);
-        setGenresError(t('home.genresError'));
-      }
-    };
-
-    fetchGenres();
-  }, [t]);
-
-  const genres = useMemo(() => allGenres, [allGenres]);
+  }, [hasMore, loading, loadingMore, searchTerm, currentGenre, fetchSongs]);
 
   return (
     <section className={styles.homePage}>
@@ -121,18 +97,6 @@ function Home() {
           </div>
         )}
 
-        <SearchBar searchTerm={searchTerm} onSearch={setSearchTerm} t={t} />
-
-        <FilterSong
-          genres={genres}
-          filters={filters}
-          onFilterChange={setFilters}
-          t={t}
-        />
-
-        {genresError && (
-          <p className={styles.sectionSubtitle}>{genresError}</p>
-        )}
 cad
         <AsyncState
           loading={loading}
