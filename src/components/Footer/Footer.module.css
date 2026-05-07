@@ -1,11 +1,11 @@
 @reference "tailwindcss";
 
 .footer {
-  @apply mt-auto border-t border-zinc-800 bg-black/95 px-6 py-12 text-white md:px-8;
+  @apply mt-auto border-t border-zinc-800 bg-black/95 px-4 py-6 text-white md:px-8 md:py-12;
 }
 
 .grid {
-  @apply mx-auto grid max-w-7xl grid-cols-1 gap-8 md:grid-cols-4;
+  @apply mx-auto grid max-w-7xl grid-cols-2 gap-6 md:grid-cols-4 md:gap-8;
 }
 
 .section {

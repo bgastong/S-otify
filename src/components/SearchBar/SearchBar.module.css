@@ -13,7 +13,7 @@
 }
 
 .searchBar {
-	@apply my-4 w-full max-w-2xl;
+	@apply my-4 w-full max-w-xl md:max-w-2xl;
 	position: relative;
 }
 
