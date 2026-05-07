@@ -44,7 +44,20 @@
     "title": "Vista de canción",
     "description": "Esta pantalla queda lista para la integración de Fabrizio: fetch por id, manejo de error y render final de datos.",
     "integrationPending": "Integración pendiente",
-    "integrationNote": "No implementar lógica final en esta rama para evitar conflictos con tareas asignadas."
+    "integrationNote": "No implementar lógica final en esta rama para evitar conflictos con tareas asignadas.",
+    "songType": "Canción",
+    "back": "Volver",
+    "play": "Reproducir",
+    "addToFavorites": "Agregar a Favoritos",
+    "detailsTitle": "Detalles",
+    "artist": "Artista",
+    "genre": "Género",
+    "id": "ID",
+    "duration": "Duración",
+    "year": "Año",
+    "loadingMessage": "Cargando detalles de la canción...",
+    "notFound": "No se encontró la canción.",
+    "errorMessage": "No pudimos cargar los detalles de la canción."
   },
   "player": {
     "noSongSelected": "Sin ninguna canción seleccionada",

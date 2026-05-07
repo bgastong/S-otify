@@ -6,33 +6,27 @@ import SearchBar from "../../components/SearchBar/SearchBar";
 import FilterSong from "../../components/FilterSong/FilterSong";
 import AsyncState from "../../components/AsyncState/AsyncState";
 import SongCard from "../../components/SongCard/SongCard";
-import { isYouTubeEmbeddable } from "../../utils/youtubeValidation";
 import styles from "./Home.module.css";
 
-function Home({ onSelectSong }) {
+function Home() {
   const { t } = useTranslation();
   const [songs, setSongs] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState({ genre: "" });
   const [allGenres, setAllGenres] = useState([]);
-  const [embeddableBySongId, setEmbeddableBySongId] = useState({});
   const [genresError, setGenresError] = useState("");
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const { loading, error, runTask } = useAsyncStatus();
   const isSearching = searchTerm.trim().length > 0;
   const requestIdRef = useRef(0);
-  const sentinelRef = useRef(null);
 
-  const fetchSongs = useCallback(async (search, genre, pageNum = 1) => {
+  const fetchSongs = useCallback(async (search, genre) => {
     const currentRequestId = requestIdRef.current + 1;
     requestIdRef.current = currentRequestId;
 
     const data = await runTask(
       () => {
         const query = search.trim();
-        const options = { page: pageNum, limit: 10, genre };
+        const options = { page: 1, limit: 30, genre };
         if (!query) {
           return songsService.getSongs(options);
         }
@@ -42,104 +36,23 @@ function Home({ onSelectSong }) {
     );
 
     if (currentRequestId !== requestIdRef.current) {
-      return null;
+      return;
     }
 
     if (Array.isArray(data)) {
-      return data;
-    }
-    return [];
-  }, [runTask, t]);
-
-  const resetAndFetch = useCallback(async (search, genre) => {
-    setPage(1);
-    setHasMore(true);
-    const data = await fetchSongs(search, genre, 1);
-    if (data) {
       setSongs(data);
-      setHasMore(data.length === 10);
-    } else {
-      setSongs([]);
-      setHasMore(false);
-}
-  }, [fetchSongs]);
-
-  const loadMoreSongs = useCallback(async () => {
-    if (isLoadingMore || !hasMore) return;
-    setIsLoadingMore(true);
-
-    const nextPage = page + 1;
-    const data = await fetchSongs(searchTerm, filters.genre, nextPage);
-
-  if (data && data.length > 0) {
-    setSongs((prev) => [...prev, ...data]);
-    setPage(nextPage);
-    setHasMore(data.length === 10);
-  } else {
-    setHasMore(false);
-  }
-
-    setIsLoadingMore(false);
-  }, [page, hasMore, isLoadingMore, searchTerm, filters.genre, fetchSongs]);
+      return;
+    }
+    setSongs([]);
+  }, [runTask, t]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      resetAndFetch(searchTerm, filters.genre);
+      fetchSongs(searchTerm, filters.genre);
     }, 80);
 
     return () => clearTimeout(timer);
-  }, [searchTerm, filters.genre, resetAndFetch]);
-
-  useEffect(() => {
-    let isMounted = true;
-
-    const validateEmbeddableSongs = async () => {
-      if (!songs.length) {
-        if (isMounted) {
-          setEmbeddableBySongId({});
-        }
-        return;
-      }
-
-      const validations = await Promise.all(
-        songs.map(async (song) => {
-          const isEmbeddable = await isYouTubeEmbeddable(song.youtubeId);
-          return [song.id, isEmbeddable];
-        })
-      );
-
-      if (!isMounted) {
-        return;
-      }
-
-      setEmbeddableBySongId(Object.fromEntries(validations));
-    };
-
-    validateEmbeddableSongs();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [songs]);
-
-  useEffect(() => {
-    if (!sentinelRef.current) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && hasMore && !isLoadingMore && !loading) {
-          loadMoreSongs();
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    observer.observe(sentinelRef.current);
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [hasMore, isLoadingMore, loading, loadMoreSongs]);
+  }, [searchTerm, filters.genre, fetchSongs]);
 
   useEffect(() => {
     const fetchGenres = async () => {
@@ -189,7 +102,7 @@ function Home({ onSelectSong }) {
           isEmpty={!loading && !error && songs.length === 0}
           loadingMessage={t('home.loadingMessage')}
           emptyMessage={t('home.emptyMessage')}
-          onRetry={() => resetAndFetch(searchTerm, filters.genre)}
+          onRetry={() => fetchSongs(searchTerm, filters.genre)}
         />
 
         {!isSearching && (
@@ -200,24 +113,11 @@ function Home({ onSelectSong }) {
         )}
 
         {songs.length > 0 && (
-          <>
-            <div className={styles.cardsGrid}>
-              {songs.map((song) => (
-                <SongCard
-                  key={song.id}
-                  song={song}
-                  isEmbeddable={embeddableBySongId[song.id] ?? true}
-                  onSelectSong={onSelectSong}
-                />
-              ))}
-              <div ref={sentinelRef} className={styles.sentinel} />
-            </div>
-            {isLoadingMore && (
-              <div className={styles.loadingMore}>
-                <p>{t('home.loadingMessage')}</p>
-              </div>
-            )}
-          </>
+          <div className={styles.cardsGrid}>
+            {songs.map((song) => (
+              <SongCard key={song.id} song={song} />
+            ))}
+          </div>
         )}
       </div>
     </section>

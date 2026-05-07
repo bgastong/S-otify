@@ -44,7 +44,20 @@
     "title": "Song view",
     "description": "This screen is ready for Fabrizio's integration: fetch by id, error handling and final data rendering.",
     "integrationPending": "Integration pending",
-    "integrationNote": "Do not implement final logic in this branch to avoid conflicts with assigned tasks."
+    "integrationNote": "Do not implement final logic in this branch to avoid conflicts with assigned tasks.",
+    "songType": "Song",
+    "back": "Go back",
+    "play": "Play",
+    "addToFavorites": "Add to Favorites",
+    "detailsTitle": "Details",
+    "artist": "Artist",
+    "genre": "Genre",
+    "id": "ID",
+    "duration": "Duration",
+    "year": "Year",
+    "loadingMessage": "Loading song details...",
+    "notFound": "Song not found.",
+    "errorMessage": "Could not load song details."
   },
   "player": {
     "noSongSelected": "No song selected",

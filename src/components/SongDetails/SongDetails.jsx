@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { songsService } from "../../services/songsService";
 import AsyncState from "../AsyncState/AsyncState";
 
 function SongDetails({ onSelectSong }) {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [song, setSong] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -28,11 +30,11 @@ function SongDetails({ onSelectSong }) {
         if (isMounted && data) {
           setSong(data);
         } else if (isMounted && !data) {
-          setError("No se encontró la canción.");
+          setError(t('details.notFound'));
         }
       } catch (err) {
         if (isMounted) {
-          setError(err.message || "No pudimos cargar los detalles de la canción.");
+          setError(err.message || t('details.errorMessage'));
         }
       } finally {
         if (isMounted) {
@@ -67,15 +69,15 @@ function SongDetails({ onSelectSong }) {
           className="cursor-pointer mb-6 px-4 py-2 text-sm font-medium text-white/70 hover:text-white transition-colors flex items-center gap-2 group"
         >
           <span className=" text-lg group-hover:-translate-x-1 transition-transform">←</span>
-          Volver
+          {t('details.back')}
         </button>
 
         <AsyncState
           loading={loading}
           error={error}
           isEmpty={!loading && !error && !song}
-          loadingMessage="Cargando detalles de la canción..."
-          emptyMessage="No se encontró la canción."
+          loadingMessage={t('details.loadingMessage')}
+          emptyMessage={t('details.notFound')}
           onRetry={() => window.location.reload()}
         />
 
@@ -122,7 +124,7 @@ function SongDetails({ onSelectSong }) {
                 {/* Información de la canción */}
                 <div className="flex-1">
                   <p className="text-xs font-semibold uppercase tracking-widest text-white/50 mb-2">
-                    Canción
+                    {t('details.songType')}
                   </p>
                   <h1 className="text-4xl md:text-5xl font-black text-white mb-2 leading-tight">
                     {song.name}
@@ -143,14 +145,14 @@ function SongDetails({ onSelectSong }) {
                       className="flex-1 px-6 py-3 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white font-semibold rounded-lg hover:from-indigo-700 hover:to-indigo-600 transition-all duration-300 shadow-lg hover:shadow-indigo-500/50 flex items-center justify-center gap-2"
                     >
                       <span className="text-lg">▶</span>
-                      Reproducir
+                      {t('details.play')}
                     </button>
                     <button
                       onClick={handleAddToFavorites}
                       className="flex-1 px-6 py-3 bg-white/10 text-white font-semibold rounded-lg hover:bg-white/20 transition-colors duration-300 border border-white/20 flex items-center justify-center gap-2"
                     >
                       <span className="text-lg">♡</span>
-                      Agregar a Favoritos
+                      {t('details.addToFavorites')}
                     </button>
                   </div>
                 </div>
@@ -158,11 +160,11 @@ function SongDetails({ onSelectSong }) {
 
               {/* Detalles adicionales */}
               <div className="mt-12 pt-8 border-t border-white/10">
-                <h2 className="text-xl font-bold text-white mb-6">Detalles</h2>
+                <h2 className="text-xl font-bold text-white mb-6">{t('details.detailsTitle')}</h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
                   <div>
                     <p className="text-xs uppercase tracking-widest text-white/50 mb-2">
-                      Artista
+                      {t('details.artist')}
                     </p>
                     <p className="text-lg font-semibold text-white">
                       {song.artist}
@@ -172,7 +174,7 @@ function SongDetails({ onSelectSong }) {
                   {song.genre && (
                     <div>
                       <p className="text-xs uppercase tracking-widest text-white/50 mb-2">
-                        Género
+                        {t('details.genre')}
                       </p>
                       <p className="text-lg font-semibold text-white capitalize">
                         {song.genre}
@@ -182,7 +184,7 @@ function SongDetails({ onSelectSong }) {
 
                   <div>
                     <p className="text-xs uppercase tracking-widest text-white/50 mb-2">
-                      ID
+                      {t('details.id')}
                     </p>
                     <p className="text-lg font-semibold text-white/70 font-mono">
                       {song.id}
@@ -192,7 +194,7 @@ function SongDetails({ onSelectSong }) {
                   {song.duration && (
                     <div>
                       <p className="text-xs uppercase tracking-widest text-white/50 mb-2">
-                        Duración
+                        {t('details.duration')}
                       </p>
                       <p className="text-lg font-semibold text-white">
                         {song.duration}
@@ -203,7 +205,7 @@ function SongDetails({ onSelectSong }) {
                   {song.year && (
                     <div>
                       <p className="text-xs uppercase tracking-widest text-white/50 mb-2">
-                        Año
+                        {t('details.year')}
                       </p>
                       <p className="text-lg font-semibold text-white">
                         {song.year}
