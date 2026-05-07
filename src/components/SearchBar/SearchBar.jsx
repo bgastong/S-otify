@@ -1,13 +1,13 @@
 import { useId } from "react";
 import styles from "./SearchBar.module.css";
 
-function SearchBar({ searchTerm, onSearch }) {
+function SearchBar({ searchTerm, onSearch, t }) {
   const inputId = useId();
 
   return (
     <div className={styles.searchBar}>
       <label htmlFor={inputId} className={styles.srOnly}>
-        Buscar por cancion o artista
+        {t ? t('home.searchLabel') : 'Buscar por canción o artista'}
       </label>
       <span className={styles.icon} aria-hidden="true">⌕</span>
       <input
@@ -15,7 +15,7 @@ function SearchBar({ searchTerm, onSearch }) {
         type="search"
         value={searchTerm}
         onChange={(e) => onSearch(e.target.value)}
-        placeholder="Buscar por canción o artista..."
+        placeholder={t ? t('home.searchPlaceholder') : 'Buscar por canción o artista...'}
         autoComplete="off"
         className={styles.input}
       />

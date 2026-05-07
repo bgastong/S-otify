@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { songsService } from "../../services/songsService";
 import useAsyncStatus from "../../hooks/useAsyncStatus";
 import SearchBar from "../../components/SearchBar/SearchBar";
@@ -9,6 +10,7 @@ import { isYouTubeEmbeddable } from "../../utils/youtubeValidation";
 import styles from "./Home.module.css";
 
 function Home({ onSelectSong }) {
+  const { t } = useTranslation();
   const [songs, setSongs] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState({ genre: "" });
@@ -32,7 +34,7 @@ function Home({ onSelectSong }) {
         }
         return songsService.searchSongs(query, options);
       },
-      "Ocurrio un error al cargar las canciones."
+      t('home.errorMessage')
     );
 
     if (currentRequestId !== requestIdRef.current) {
@@ -44,7 +46,7 @@ function Home({ onSelectSong }) {
       return;
     }
     setSongs([]);
-  }, [runTask]);
+  }, [runTask, t]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -95,12 +97,12 @@ function Home({ onSelectSong }) {
         setAllGenres(uniqueGenres);
       } catch {
         setAllGenres([]);
-        setGenresError("No se pudieron cargar los generos.");
+        setGenresError(t('home.genresError'));
       }
     };
 
     fetchGenres();
-  }, []);
+  }, [t]);
 
   const genres = useMemo(() => allGenres, [allGenres]);
 
@@ -109,18 +111,19 @@ function Home({ onSelectSong }) {
       <div className={styles.surface}>
         {!isSearching && (
           <div className={styles.hero}>
-            <p className={styles.eyebrow}>INICIO</p>
-            <h1 className={styles.title}>Toda tu musica, en un solo lugar</h1>
-            <p className={styles.subtitle}>Busca letra a letra por cancion o artista, y filtra por genero al instante.</p>
+            <p className={styles.eyebrow}>{t('home.eyebrow')}</p>
+            <h1 className={styles.title}>{t('home.title')}</h1>
+            <p className={styles.subtitle}>{t('home.subtitle')}</p>
           </div>
         )}
 
-        <SearchBar searchTerm={searchTerm} onSearch={setSearchTerm} />
+        <SearchBar searchTerm={searchTerm} onSearch={setSearchTerm} t={t} />
 
         <FilterSong
           genres={genres}
           filters={filters}
           onFilterChange={setFilters}
+          t={t}
         />
 
         {genresError && (
@@ -131,15 +134,15 @@ function Home({ onSelectSong }) {
           loading={loading}
           error={error}
           isEmpty={!loading && !error && songs.length === 0}
-          loadingMessage="Cargando canciones..."
-          emptyMessage="No se encontraron canciones para tu busqueda."
+          loadingMessage={t('home.loadingMessage')}
+          emptyMessage={t('home.emptyMessage')}
           onRetry={() => fetchSongs(searchTerm, filters.genre)}
         />
 
         {!isSearching && (
           <>
-            <h2 className={styles.sectionTitle}>Canciones para vos</h2>
-            <p className={styles.sectionSubtitle}>Resultados dinamicos desde API segun busqueda y genero.</p>
+            <h2 className={styles.sectionTitle}>{t('home.sectionTitle')}</h2>
+            <p className={styles.sectionSubtitle}>{t('home.sectionSubtitle')}</p>
           </>
         )}
 
