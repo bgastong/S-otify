@@ -30,16 +30,21 @@ function App() {
 
   return (
     <BrowserRouter>
-      <div className="min-h-screen flex flex-col bg-gray-950 text-white">
+      <div className="min-h-screen flex flex-col bg-[#000000] text-white">
         <Header />
 
-        <LayoutShell>
-          <Routes>
-            <Route path="/" element={<Home onSelectSong={handleSelectSong} />} />
-            <Route path="/details/:id" element={<Details onSelectSong={handleSelectSong} />} />
-            <Route path="/favorites" element={<Favorites />} />
-          </Routes>
-        </LayoutShell>
+        {/* CONTENIDO PRINCIPAL: 
+            Aquí aplicamos pt-28 (padding top) para empujar el contenido debajo de la Navbar
+            y pb-32 (padding bottom) para que el Player no tape el final de las listas. */}
+        <main className="flex-grow pt-28 md:pt-32 pb-36">
+          <LayoutShell>
+            <Routes>
+              <Route path="/" element={<Home onSelectSong={handleSelectSong} />} />
+              <Route path="/details/:id" element={<Details onSelectSong={handleSelectSong} />} />
+              <Route path="/favorites" element={<Favorites />} />
+            </Routes>
+          </LayoutShell>
+        </main>
 
         <Player
           audioUrl={selectedSong?.audioUrl || ""}
