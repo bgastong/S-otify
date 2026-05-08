@@ -54,8 +54,8 @@ function Home({ searchTerm = "", currentGenre = "" }) {
 
   useEffect(() => {
     pageRef.current = 1;
-    setHasMore(true);
     const timer = setTimeout(() => {
+      setHasMore(true);
       fetchSongs(searchTerm, currentGenre, 1, false);
     }, 80);
 
@@ -97,7 +97,6 @@ function Home({ searchTerm = "", currentGenre = "" }) {
           </div>
         )}
 
-cad
         <AsyncState
           loading={loading}
           error={error}
