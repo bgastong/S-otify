@@ -17,40 +17,43 @@ function Home({ searchTerm = "", currentGenre = "" }) {
   const observerRef = useRef(null);
   const pageRef = useRef(1);
 
-  const fetchSongs = useCallback(async (search, genre, page = 1, isLoadingMore = false) => {
-    const currentRequestId = requestIdRef.current + 1;
-    requestIdRef.current = currentRequestId;
+  const fetchSongs = useCallback(
+    async (search, genre, page = 1, isLoadingMore = false) => {
+      const currentRequestId = requestIdRef.current + 1;
+      requestIdRef.current = currentRequestId;
 
-    const fetchTask = async () => {
-      const query = search.trim();
-      const options = { page, limit: 10, genre };
-      if (!query) {
-        return songsService.getSongs(options);
+      const fetchTask = async () => {
+        const query = search.trim();
+        const options = { page, limit: 10, genre };
+        if (!query) {
+          return songsService.getSongs(options);
+        }
+        return songsService.searchSongs(query, options);
+      };
+
+      const data = await runTask(fetchTask, t("home.errorMessage"));
+
+      if (currentRequestId !== requestIdRef.current) {
+        return;
       }
-      return songsService.searchSongs(query, options);
-    };
 
-    const data = await runTask(fetchTask, t('home.errorMessage'));
-
-    if (currentRequestId !== requestIdRef.current) {
-      return;
-    }
-
-    if (Array.isArray(data)) {
-      if (isLoadingMore) {
-        setSongs((prev) => [...prev, ...data]);
-      } else {
-        setSongs(data);
+      if (Array.isArray(data)) {
+        if (isLoadingMore) {
+          setSongs((prev) => [...prev, ...data]);
+        } else {
+          setSongs(data);
+        }
+        setHasMore(data.length === 10);
+        return;
       }
-      setHasMore(data.length === 10);
-      return;
-    }
-    
-    if (!isLoadingMore) {
-      setSongs([]);
-    }
-    setHasMore(false);
-  }, [runTask, t]);
+
+      if (!isLoadingMore) {
+        setSongs([]);
+      }
+      setHasMore(false);
+    },
+    [runTask, t],
+  );
 
   useEffect(() => {
     pageRef.current = 1;
@@ -74,7 +77,7 @@ function Home({ searchTerm = "", currentGenre = "" }) {
           });
         }
       },
-      { rootMargin: '100px', threshold: 0 }
+      { rootMargin: "100px", threshold: 0 },
     );
 
     if (observerRef.current) {
@@ -91,9 +94,9 @@ function Home({ searchTerm = "", currentGenre = "" }) {
       <div className={styles.surface}>
         {!isSearching && (
           <div className={styles.hero}>
-            <p className={styles.eyebrow}>{t('home.eyebrow')}</p>
-            <h1 className={styles.title}>{t('home.title')}</h1>
-            <p className={styles.subtitle}>{t('home.subtitle')}</p>
+            <p className={styles.eyebrow}>{t("home.eyebrow")}</p>
+            <h1 className={styles.title}>{t("home.title")}</h1>
+            <p className={styles.subtitle}>{t("home.subtitle")}</p>
           </div>
         )}
 
@@ -101,15 +104,17 @@ function Home({ searchTerm = "", currentGenre = "" }) {
           loading={loading}
           error={error}
           isEmpty={!loading && !error && songs.length === 0}
-          loadingMessage={t('home.loadingMessage')}
-          emptyMessage={t('home.emptyMessage')}
+          loadingMessage={t("home.loadingMessage")}
+          emptyMessage={t("home.emptyMessage")}
           onRetry={() => fetchSongs(searchTerm, currentGenre)}
         />
 
         {!isSearching && (
           <>
-            <h2 className={styles.sectionTitle}>{t('home.sectionTitle')}</h2>
-            <p className={styles.sectionSubtitle}>{t('home.sectionSubtitle')}</p>
+            <h2 className={styles.sectionTitle}>{t("home.sectionTitle")}</h2>
+            <p className={styles.sectionSubtitle}>
+              {t("home.sectionSubtitle")}
+            </p>
           </>
         )}
 
@@ -120,13 +125,13 @@ function Home({ searchTerm = "", currentGenre = "" }) {
             ))}
           </div>
         )}
-        
+
         {/* Sentinel fuera del grid para que sea detectable */}
         <div ref={observerRef} className="h-8 w-full" />
-        
+
         {loadingMore && (
-          <div style={{ textAlign: 'center', padding: '2rem', color: '#888' }}>
-            {t('home.loadingMessage')}
+          <div style={{ textAlign: "center", padding: "2rem", color: "#888" }}>
+            {t("home.loadingMessage")}
           </div>
         )}
       </div>
