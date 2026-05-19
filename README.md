@@ -87,6 +87,8 @@ Mas detalle en docs/ARCHITECTURE.md.
 - npm run preview
 - npm run lint
 - npm run seed:songs
+- npm run test
+- npm run test:run
 
 ## API
 
@@ -96,13 +98,24 @@ https://69ebb64897482ad5c528051d.mockapi.io/api/s-otify/songs
 
 Documentacion de endpoints y contrato: docs/API.md.
 
-## Capturas
+## Testing automático
 
-Agregar capturas en esta seccion antes de la entrega:
+Este proyecto incorpora testing automático para validar componentes, páginas, hooks y funcionalidades principales de la aplicación.
 
-- Home
-- Details
-- Favorites
+### Librerías utilizadas
+
+- Vitest
+- React Testing Library
+- jest-dom
+- user-event
+- jsdom
+
+### Comandos de testing
+
+Ejecutar tests en modo desarrollo:
+
+```bash
+npm run test
 
 ## Notas de diseno
 
