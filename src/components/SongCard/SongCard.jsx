@@ -42,7 +42,7 @@ function SongCard({ song, onSelectSong, isEmbeddable = true, isSelected = false 
         )}
       </div>
       <div className={styles.content}>
-        <h3 className={styles.title}>
+        <h3 className={ styles.title}>
           {song.name}
         </h3>
         <p className={styles.artist}>
