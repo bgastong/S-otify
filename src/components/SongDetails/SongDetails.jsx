@@ -84,13 +84,32 @@ function SongDetails({ onSelectSong }) {
     };
   }, [id]);
 
-  // Cargar estado de favorito
-  useEffect(() => {
-    if (song?.id) {
-      const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
-      setIsFavorite(favorites.some(f => f.id === song.id));
+// Cargar estado de favorito desde API
+useEffect(() => {
+  let isMounted = true;
+
+  const fetchFavoriteState = async () => {
+    if (!song?.id) return;
+
+    try {
+      const data = await songsService.isFavorite(song.id);
+
+      if (isMounted) {
+        setIsFavorite(Boolean(data?.isFavorite));
+      }
+    } catch {
+      if (isMounted) {
+        setIsFavorite(false);
+      }
     }
-  }, [song]);
+  };
+
+  fetchFavoriteState();
+
+  return () => {
+    isMounted = false;
+  };
+}, [song?.id]);
 
   // Obtener duración del audio
   useEffect(() => {
@@ -111,21 +130,21 @@ function SongDetails({ onSelectSong }) {
     };
   }, [song?.audioUrl]);
 
-  const handleAddToFavorites = () => {
-    if (!song) return;
-    
-    const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
-    let newFavorites;
-    
+const handleAddToFavorites = async () => {
+  if (!song) return;
+
+  try {
     if (isFavorite) {
-      newFavorites = favorites.filter(f => f.id !== song.id);
+      await songsService.removeFavorite(song.id);
+      setIsFavorite(false);
     } else {
-      newFavorites = [...favorites, song];
+      await songsService.addFavorite(song.id);
+      setIsFavorite(true);
     }
-    
-    localStorage.setItem('favorites', JSON.stringify(newFavorites));
-    setIsFavorite(!isFavorite);
-  };
+  } catch (err) {
+    setError(err.message || 'No pudimos actualizar favoritos.');
+  }
+};
 
   const handlePlay = () => {
     if (song && typeof onSelectSong === "function") {

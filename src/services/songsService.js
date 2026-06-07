@@ -1,83 +1,141 @@
-const BASE_URL = 'https://69ebb64897482ad5c528051d.mockapi.io/api/s-otify/songs';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
-// Punto unico de acceso HTTP para datos de canciones.
-function buildSongsUrl({ page = 1, limit = 10, search = '', genre = '' } = {}) {
-  const url = new URL(BASE_URL);
-  url.searchParams.set('page', String(page));
-  url.searchParams.set('limit', String(limit));
+async function handleResponse(response, fallbackMessage) {
+  if (response.status === 404) {
+    return null;
+  }
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => null);
+    throw new Error(errorData?.error || fallbackMessage);
+  }
+
+  const data = await response.json();
+
+if (data && Array.isArray(data.data)) {
+  return data.data;
+}
+
+return data;
+}
+
+function buildSongsQuery({ page = 1, limit = 20, search = '', genre = '' } = {}) {
+  const params = new URLSearchParams();
+
+  params.set('page', String(page));
+  params.set('limit', String(limit));
+
   if (search.trim()) {
-    url.searchParams.set('name', search.trim());
+    params.set('search', search.trim());
   }
-  if (genre.trim()) {
-    url.searchParams.set('genre', genre.trim());
-  }
-  return url.toString();
-}
 
-function buildArtistSearchUrl({ page = 1, limit = 10, artist = '', genre = '' } = {}) {
-  const url = new URL(BASE_URL);
-  url.searchParams.set('page', String(page));
-  url.searchParams.set('limit', String(limit));
-  if (artist.trim()) {
-    url.searchParams.set('artist', artist.trim());
-  }
   if (genre.trim()) {
-    url.searchParams.set('genre', genre.trim());
+    params.set('genre', genre.trim());
   }
-  return url.toString();
-}
 
-function mergeUniqueSongs(...collections) {
-  const byId = new Map();
-  collections.flat().forEach((song) => {
-    byId.set(song.id, song);
-  });
-  return Array.from(byId.values());
+  return params.toString();
 }
 
 export const songsService = {
   async getSongs(options = {}) {
-    const response = await fetch(buildSongsUrl(options));
-    if (!response.ok) {
-      throw new Error('No pudimos cargar las canciones en este momento.');
-    }
-    return response.json();
+    const query = buildSongsQuery(options);
+
+    const response = await fetch(`${API_URL}/songs?${query}`);
+
+    return handleResponse(
+      response,
+      'No pudimos cargar las canciones en este momento.'
+    );
   },
 
   async getSongsByArtist(options = {}) {
-    const response = await fetch(buildArtistSearchUrl(options));
-    if (response.status === 404) {
-      return [];
-    }
-    if (!response.ok) {
-      throw new Error('No pudimos completar la busqueda por artista.');
-    }
-    return response.json();
+    const query = buildSongsQuery({
+      ...options,
+      search: options.artist || options.search || '',
+    });
+
+    const response = await fetch(`${API_URL}/songs?${query}`);
+
+    return handleResponse(
+      response,
+      'No pudimos completar la busqueda por artista.'
+    );
   },
 
   async getSongById(id) {
-    const response = await fetch(`${BASE_URL}/${id}`);
-    if (response.status === 404) {
-      return null;
-    }
-    if (!response.ok) {
-      throw new Error('No pudimos cargar la cancion seleccionada.');
-    }
-    return response.json();
+    const response = await fetch(`${API_URL}/songs/${id}`);
+
+    return handleResponse(
+      response,
+      'No pudimos cargar la cancion seleccionada.'
+    );
   },
 
   async searchSongs(search, options = {}) {
-    const normalizedSearch = search.trim();
-    if (!normalizedSearch) {
-      return this.getSongs(options);
-    }
+    return this.getSongs({
+      ...options,
+      search,
+    });
+  },
 
-    const [byName, byArtist] = await Promise.all([
-      this.getSongs({ ...options, search: normalizedSearch }),
-      this.getSongsByArtist({ ...options, artist: normalizedSearch }),
-    ]);
+  async getFavorites(userId = 'anonymous', page = 1, limit = 20) {
+    const params = new URLSearchParams();
 
-    return mergeUniqueSongs(byName, byArtist);
+    params.set('userId', userId);
+    params.set('page', String(page));
+    params.set('limit', String(limit));
+
+    const response = await fetch(`${API_URL}/favorites?${params.toString()}`);
+
+    return handleResponse(
+      response,
+      'No pudimos cargar tus canciones favoritas.'
+    );
+  },
+
+  async isFavorite(songId, userId = 'anonymous') {
+    const params = new URLSearchParams();
+
+    params.set('userId', userId);
+
+    const response = await fetch(
+      `${API_URL}/songs/${songId}/favorites?${params.toString()}`
+    );
+
+    return handleResponse(
+      response,
+      'No pudimos verificar si la cancion esta en favoritos.'
+    );
+  },
+
+  async addFavorite(songId, userId = 'anonymous') {
+    const response = await fetch(`${API_URL}/songs/${songId}/favorites`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ userId }),
+    });
+
+    return handleResponse(
+      response,
+      'No pudimos agregar la cancion a favoritos.'
+    );
+  },
+
+  async removeFavorite(songId, userId = 'anonymous') {
+    const response = await fetch(`${API_URL}/songs/${songId}/favorites`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ userId }),
+    });
+
+    return handleResponse(
+      response,
+      'No pudimos quitar la cancion de favoritos.'
+    );
   },
 };
 
