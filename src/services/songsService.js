@@ -18,7 +18,12 @@ async function handleResponse(response, fallbackMessage) {
   return unwrapApiData(payload);
 }
 
-function buildSongsQuery({ page = 1, limit = 20, search = "", genre = "" } = {}) {
+function buildSongsQuery({
+  page = 1,
+  limit = 20,
+  search = "",
+  genre = "",
+} = {}) {
   const params = new URLSearchParams();
 
   params.set("page", String(page));

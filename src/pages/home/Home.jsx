@@ -80,14 +80,23 @@ function Home({ searchTerm = "", currentGenre = "" }) {
       { rootMargin: "100px", threshold: 0 },
     );
 
-    if (observerRef.current) {
+    if (observerRef.current && songs.length > 0 && !error) {
       observer.observe(observerRef.current);
     }
 
     return () => {
       observer.disconnect();
     };
-  }, [hasMore, loading, loadingMore, searchTerm, currentGenre, fetchSongs]);
+  }, [
+    hasMore,
+    loading,
+    loadingMore,
+    searchTerm,
+    currentGenre,
+    fetchSongs,
+    songs.length,
+    error,
+  ]);
 
   return (
     <section className={styles.homePage}>
@@ -127,7 +136,9 @@ function Home({ searchTerm = "", currentGenre = "" }) {
         )}
 
         {/* Sentinel fuera del grid para que sea detectable */}
-        <div ref={observerRef} className="h-8 w-full" />
+        {songs.length > 0 && hasMore && !error && (
+          <div ref={observerRef} className="h-8 w-full" />
+        )}
 
         {loadingMore && (
           <div style={{ textAlign: "center", padding: "2rem", color: "#888" }}>
