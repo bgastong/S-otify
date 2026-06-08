@@ -1,5 +1,5 @@
 import { render, screen, waitFor } from "@testing-library/react";
-import { vi } from "vitest";
+import { describe, beforeEach, expect, it, vi } from "vitest";
 import Home from "./Home";
 import { songsService } from "../../services/songsService";
 import userEvent from "@testing-library/user-event";
@@ -71,17 +71,13 @@ describe("Home", () => {
 
     render(<Home />);
 
-    expect(
-      await screen.findByText("home.emptyMessage")
-    ).toBeInTheDocument();
+    expect(await screen.findByText("home.emptyMessage")).toBeInTheDocument();
   });
 
   it("usa searchSongs cuando recibe searchTerm", async () => {
     render(<Home searchTerm="Queen" />);
 
-    expect(
-      await screen.findByText("Bohemian Rhapsody")
-    ).toBeInTheDocument();
+    expect(await screen.findByText("Bohemian Rhapsody")).toBeInTheDocument();
 
     expect(songsService.searchSongs).toHaveBeenCalledWith("Queen", {
       page: 1,
@@ -95,34 +91,32 @@ describe("Home", () => {
 
     render(<Home />);
 
-    expect(
-      await screen.findByText("home.errorMessage")
-    ).toBeInTheDocument();
+    expect(await screen.findByText("home.errorMessage")).toBeInTheDocument();
   });
 
   it("ejecuta retry y muestra canciones luego de reintentar", async () => {
-  const user = userEvent.setup();
+    const user = userEvent.setup();
 
-  songsService.getSongs.mockRejectedValueOnce(new Error("Error API"));
+    songsService.getSongs.mockRejectedValueOnce(new Error("Error API"));
 
-  render(<Home />);
+    render(<Home />);
 
-  const button = await screen.findByRole("button", {
-    name: /reintentar/i,
+    const button = await screen.findByRole("button", {
+      name: /reintentar/i,
+    });
+
+    songsService.getSongs.mockResolvedValueOnce([
+      {
+        id: 1,
+        title: "Numb",
+        artist: "Linkin Park",
+      },
+    ]);
+
+    await user.click(button);
+
+    expect(await screen.findByText("Numb")).toBeInTheDocument();
+
+    expect(songsService.getSongs).toHaveBeenCalledTimes(2);
   });
-
-  songsService.getSongs.mockResolvedValueOnce([
-    {
-      id: 1,
-      title: "Numb",
-      artist: "Linkin Park",
-    },
-  ]);
-
-  await user.click(button);
-
-  expect(await screen.findByText("Numb")).toBeInTheDocument();
-
-  expect(songsService.getSongs).toHaveBeenCalledTimes(2);
-});
 });
