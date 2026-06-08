@@ -1,5 +1,5 @@
-import { render, screen, waitFor, expect, it } from "@testing-library/react";
-import { vi } from "vitest";
+import { render, screen, waitFor } from "@testing-library/react";
+import { describe, beforeEach, expect, it, vi } from "vitest";
 import Home from "./Home";
 import { songsService } from "../../services/songsService";
 import userEvent from "@testing-library/user-event";
