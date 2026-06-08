@@ -1,28 +1,37 @@
-const BASE_URL = 'https://69ebb64897482ad5c528051d.mockapi.io/api/s-otify/songs';
+const BASE_URL = `${import.meta.env.VITE_API_URL}/api/songs`;
+
+function unwrapApiData(payload) {
+  return payload?.data ?? payload;
+}
 
 // Punto unico de acceso HTTP para datos de canciones.
-function buildSongsUrl({ page = 1, limit = 10, search = '', genre = '' } = {}) {
+function buildSongsUrl({ page = 1, limit = 10, search = "", genre = "" } = {}) {
   const url = new URL(BASE_URL);
-  url.searchParams.set('page', String(page));
-  url.searchParams.set('limit', String(limit));
+  url.searchParams.set("page", String(page));
+  url.searchParams.set("limit", String(limit));
   if (search.trim()) {
-    url.searchParams.set('name', search.trim());
+    url.searchParams.set("name", search.trim());
   }
   if (genre.trim()) {
-    url.searchParams.set('genre', genre.trim());
+    url.searchParams.set("genre", genre.trim());
   }
   return url.toString();
 }
 
-function buildArtistSearchUrl({ page = 1, limit = 10, artist = '', genre = '' } = {}) {
+function buildArtistSearchUrl({
+  page = 1,
+  limit = 10,
+  artist = "",
+  genre = "",
+} = {}) {
   const url = new URL(BASE_URL);
-  url.searchParams.set('page', String(page));
-  url.searchParams.set('limit', String(limit));
+  url.searchParams.set("page", String(page));
+  url.searchParams.set("limit", String(limit));
   if (artist.trim()) {
-    url.searchParams.set('artist', artist.trim());
+    url.searchParams.set("artist", artist.trim());
   }
   if (genre.trim()) {
-    url.searchParams.set('genre', genre.trim());
+    url.searchParams.set("genre", genre.trim());
   }
   return url.toString();
 }
@@ -39,9 +48,10 @@ export const songsService = {
   async getSongs(options = {}) {
     const response = await fetch(buildSongsUrl(options));
     if (!response.ok) {
-      throw new Error('No pudimos cargar las canciones en este momento.');
+      throw new Error("No pudimos cargar las canciones en este momento.");
     }
-    return response.json();
+    const payload = await response.json();
+    return unwrapApiData(payload);
   },
 
   async getSongsByArtist(options = {}) {
@@ -50,9 +60,10 @@ export const songsService = {
       return [];
     }
     if (!response.ok) {
-      throw new Error('No pudimos completar la busqueda por artista.');
+      throw new Error("No pudimos completar la busqueda por artista.");
     }
-    return response.json();
+    const payload = await response.json();
+    return unwrapApiData(payload);
   },
 
   async getSongById(id) {
@@ -61,9 +72,10 @@ export const songsService = {
       return null;
     }
     if (!response.ok) {
-      throw new Error('No pudimos cargar la cancion seleccionada.');
+      throw new Error("No pudimos cargar la cancion seleccionada.");
     }
-    return response.json();
+    const payload = await response.json();
+    return unwrapApiData(payload);
   },
 
   async searchSongs(search, options = {}) {
