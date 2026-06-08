@@ -10,15 +10,14 @@ async function handleResponse(response, fallbackMessage) {
     throw new Error(errorData?.error || fallbackMessage);
   }
 
-  const data = await response.json();
+  const payload = await response.json();
 
-if (data && Array.isArray(data.data)) {
-  return data.data;
+  if (payload && Object.prototype.hasOwnProperty.call(payload, 'data')) {
+    return payload.data;
+  }
+
+  return payload;
 }
-
-return data;
-}
-
 function buildSongsQuery({ page = 1, limit = 20, search = '', genre = '' } = {}) {
   const params = new URLSearchParams();
 
@@ -78,21 +77,24 @@ export const songsService = {
     });
   },
 
-  async getFavorites(userId = 'anonymous', page = 1, limit = 20) {
-    const params = new URLSearchParams();
+async getFavorites(userId = 'anonymous', page = 1, limit = 20) {
+  const params = new URLSearchParams();
 
-    params.set('userId', userId);
-    params.set('page', String(page));
-    params.set('limit', String(limit));
+  params.set('userId', userId);
+  params.set('page', String(page));
+  params.set('limit', String(limit));
 
-    const response = await fetch(`${API_URL}/favorites?${params.toString()}`);
+  const response = await fetch(`${API_URL}/favorites?${params.toString()}`);
 
-    return handleResponse(
-      response,
-      'No pudimos cargar tus canciones favoritas.'
-    );
-  },
+  const favorites = await handleResponse(
+    response,
+    'No pudimos cargar tus canciones favoritas.'
+  );
 
+  return Array.isArray(favorites)
+    ? favorites.map((favorite) => favorite.song || favorite).filter(Boolean)
+    : [];
+},
   async isFavorite(songId, userId = 'anonymous') {
     const params = new URLSearchParams();
 
