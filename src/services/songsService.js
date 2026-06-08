@@ -1,4 +1,8 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+
+function unwrapApiData(payload) {
+  return payload?.data ?? payload;
+}
 
 async function handleResponse(response, fallbackMessage) {
   if (response.status === 404) {
@@ -10,27 +14,27 @@ async function handleResponse(response, fallbackMessage) {
     throw new Error(errorData?.error || fallbackMessage);
   }
 
-  const data = await response.json();
-
-if (data && Array.isArray(data.data)) {
-  return data.data;
+  const payload = await response.json();
+  return unwrapApiData(payload);
 }
 
-return data;
-}
-
-function buildSongsQuery({ page = 1, limit = 20, search = '', genre = '' } = {}) {
+function buildSongsQuery({
+  page = 1,
+  limit = 20,
+  search = "",
+  genre = "",
+} = {}) {
   const params = new URLSearchParams();
 
-  params.set('page', String(page));
-  params.set('limit', String(limit));
+  params.set("page", String(page));
+  params.set("limit", String(limit));
 
   if (search.trim()) {
-    params.set('search', search.trim());
+    params.set("search", search.trim());
   }
 
   if (genre.trim()) {
-    params.set('genre', genre.trim());
+    params.set("genre", genre.trim());
   }
 
   return params.toString();
@@ -39,26 +43,24 @@ function buildSongsQuery({ page = 1, limit = 20, search = '', genre = '' } = {})
 export const songsService = {
   async getSongs(options = {}) {
     const query = buildSongsQuery(options);
-
     const response = await fetch(`${API_URL}/songs?${query}`);
 
     return handleResponse(
       response,
-      'No pudimos cargar las canciones en este momento.'
+      "No pudimos cargar las canciones en este momento.",
     );
   },
 
   async getSongsByArtist(options = {}) {
     const query = buildSongsQuery({
       ...options,
-      search: options.artist || options.search || '',
+      search: options.artist || options.search || "",
     });
-
     const response = await fetch(`${API_URL}/songs?${query}`);
 
     return handleResponse(
       response,
-      'No pudimos completar la busqueda por artista.'
+      "No pudimos completar la busqueda por artista.",
     );
   },
 
@@ -67,7 +69,7 @@ export const songsService = {
 
     return handleResponse(
       response,
-      'No pudimos cargar la cancion seleccionada.'
+      "No pudimos cargar la cancion seleccionada.",
     );
   },
 
@@ -78,63 +80,63 @@ export const songsService = {
     });
   },
 
-  async getFavorites(userId = 'anonymous', page = 1, limit = 20) {
+  async getFavorites(userId = "anonymous", page = 1, limit = 20) {
     const params = new URLSearchParams();
 
-    params.set('userId', userId);
-    params.set('page', String(page));
-    params.set('limit', String(limit));
+    params.set("userId", userId);
+    params.set("page", String(page));
+    params.set("limit", String(limit));
 
     const response = await fetch(`${API_URL}/favorites?${params.toString()}`);
 
     return handleResponse(
       response,
-      'No pudimos cargar tus canciones favoritas.'
+      "No pudimos cargar tus canciones favoritas.",
     );
   },
 
-  async isFavorite(songId, userId = 'anonymous') {
+  async isFavorite(songId, userId = "anonymous") {
     const params = new URLSearchParams();
 
-    params.set('userId', userId);
+    params.set("userId", userId);
 
     const response = await fetch(
-      `${API_URL}/songs/${songId}/favorites?${params.toString()}`
+      `${API_URL}/songs/${songId}/favorites?${params.toString()}`,
     );
 
     return handleResponse(
       response,
-      'No pudimos verificar si la cancion esta en favoritos.'
+      "No pudimos verificar si la cancion esta en favoritos.",
     );
   },
 
-  async addFavorite(songId, userId = 'anonymous') {
+  async addFavorite(songId, userId = "anonymous") {
     const response = await fetch(`${API_URL}/songs/${songId}/favorites`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({ userId }),
     });
 
     return handleResponse(
       response,
-      'No pudimos agregar la cancion a favoritos.'
+      "No pudimos agregar la cancion a favoritos.",
     );
   },
 
-  async removeFavorite(songId, userId = 'anonymous') {
+  async removeFavorite(songId, userId = "anonymous") {
     const response = await fetch(`${API_URL}/songs/${songId}/favorites`, {
-      method: 'DELETE',
+      method: "DELETE",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({ userId }),
     });
 
     return handleResponse(
       response,
-      'No pudimos quitar la cancion de favoritos.'
+      "No pudimos quitar la cancion de favoritos.",
     );
   },
 };
