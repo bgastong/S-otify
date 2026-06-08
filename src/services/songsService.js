@@ -89,10 +89,14 @@ export const songsService = {
 
     const response = await fetch(`${API_URL}/favorites?${params.toString()}`);
 
-    return handleResponse(
+    const favorites = await handleResponse(
       response,
       "No pudimos cargar tus canciones favoritas.",
     );
+
+    return Array.isArray(favorites)
+      ? favorites.map((favorite) => favorite.song || favorite).filter(Boolean)
+      : [];
   },
 
   async isFavorite(songId, userId = "anonymous") {

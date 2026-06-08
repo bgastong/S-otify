@@ -17,44 +17,49 @@ function Home({ searchTerm = "", currentGenre = "" }) {
   const observerRef = useRef(null);
   const pageRef = useRef(1);
 
-  const fetchSongs = useCallback(
-    async (search, genre, page = 1, isLoadingMore = false) => {
-      const currentRequestId = requestIdRef.current + 1;
-      requestIdRef.current = currentRequestId;
+const PAGE_SIZE = 20;
 
-      const fetchTask = async () => {
-        const query = search.trim();
-        const options = { page, limit: 10, genre };
-        if (!query) {
-          return songsService.getSongs(options);
-        }
-        return songsService.searchSongs(query, options);
-      };
+const fetchSongs = useCallback(
+  async (search, genre, page = 1, isLoadingMore = false) => {
+    const currentRequestId = requestIdRef.current + 1;
+    requestIdRef.current = currentRequestId;
 
-      const data = await runTask(fetchTask, t("home.errorMessage"));
+    const fetchTask = async () => {
+      const query = search.trim();
+      const options = { page, limit: PAGE_SIZE, genre };
 
-      if (currentRequestId !== requestIdRef.current) {
-        return;
+      if (!query) {
+        return songsService.getSongs(options);
       }
 
-      if (Array.isArray(data)) {
-        if (isLoadingMore) {
-          setSongs((prev) => [...prev, ...data]);
-        } else {
-          setSongs(data);
-        }
-        setHasMore(data.length === 10);
-        return;
+      return songsService.searchSongs(query, options);
+    };
+
+    const data = await runTask(fetchTask, t("home.errorMessage"));
+
+    if (currentRequestId !== requestIdRef.current) {
+      return;
+    }
+
+    if (Array.isArray(data)) {
+      if (isLoadingMore) {
+        setSongs((prev) => [...prev, ...data]);
+      } else {
+        setSongs(data);
       }
 
-      if (!isLoadingMore) {
-        setSongs([]);
-      }
-      setHasMore(false);
-    },
-    [runTask, t],
-  );
+      setHasMore(data.length === PAGE_SIZE);
+      return;
+    }
 
+    if (!isLoadingMore) {
+      setSongs([]);
+    }
+
+    setHasMore(false);
+  },
+  [runTask, t],
+);
   useEffect(() => {
     pageRef.current = 1;
     const timer = setTimeout(() => {
