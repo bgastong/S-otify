@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import styles from "./SongCard.module.css";
 
 function SongCard({ song, onSelectSong, isEmbeddable = true, isSelected = false }) {
   const navigate = useNavigate();
@@ -10,57 +9,72 @@ function SongCard({ song, onSelectSong, isEmbeddable = true, isSelected = false 
     if (typeof onSelectSong === "function") {
       onSelectSong(song);
     }
+
     navigate(`/details/${song.id}`);
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter" || e.key === " ") {
-      handleCardClick();
+  const handlePlayClick = (event) => {
+    event.stopPropagation();
+
+    if (typeof onSelectSong === "function") {
+      onSelectSong(song, { autoplay: true });
+      return;
     }
+
+    navigate(`/details/${song.id}`);
   };
 
   return (
     <article
-      className={`${styles.card} ${isSelected ? styles.cardSelected : ''}`}
       onClick={handleCardClick}
-      onKeyDown={handleKeyDown}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") handleCardClick();
+      }}
       role="button"
       tabIndex={0}
+      className={`group cursor-pointer rounded-lg p-3 outline-none transition hover:-translate-y-1 ${
+        isSelected
+          ? "bg-green-500/15 ring-1 ring-green-500/40"
+          : "bg-[#181818] hover:bg-[#282828]"
+      }`}
     >
-      <div className={styles.imageContainer}>
+      <div className="relative aspect-square overflow-hidden rounded-md bg-zinc-800 shadow-xl shadow-black/50">
         {!imageError && song.image ? (
           <img
             src={song.image}
             alt={`Portada de ${song.name}`}
-            className={styles.image}
+            className="h-full w-full object-cover"
             onError={() => setImageError(true)}
           />
         ) : (
-          <div className={styles.imagePlaceholder}>
-            <span className={styles.placeholderIcon}>♪</span>
+          <div className="flex h-full w-full items-center justify-center bg-zinc-800">
+            <span className="text-4xl text-zinc-500">♪</span>
           </div>
         )}
+
+        <button
+          type="button"
+          onClick={handlePlayClick}
+          aria-label={`Reproducir ${song.name}`}
+          className="absolute bottom-2 right-2 grid h-11 w-11 translate-y-2 place-items-center rounded-full bg-green-500 text-sm font-black text-black opacity-0 shadow-xl transition hover:scale-105 group-hover:translate-y-0 group-hover:opacity-100"
+        >
+          ▶
+        </button>
       </div>
-      <div className={styles.content}>
-        <h3 className={ styles.title}>
-          {song.name}
-        </h3>
-        <p className={styles.artist}>
-          {song.artist}
-        </p>
-        
-        {/* Meta row: genre + warning */}
-        <div className={styles.metaRow}>
+
+      <div className="mt-3 min-w-0">
+        <h3 className="truncate text-sm font-bold text-white">{song.name}</h3>
+        <p className="mt-1 truncate text-sm text-zinc-400">{song.artist}</p>
+
+        <div className="mt-2 flex flex-wrap gap-2">
           {song.genre && (
-            <span className={styles.genre}>
+            <span className="rounded-full bg-white/10 px-2 py-1 text-[10px] font-bold uppercase text-green-400">
               {song.genre}
             </span>
           )}
+
           {!isEmbeddable && (
-            <span className={styles.warning}>
-              <svg className={styles.warningIcon} fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-              </svg>
+            <span className="rounded-full bg-amber-500/10 px-2 py-1 text-[10px] font-bold uppercase text-amber-300">
               No disponible
             </span>
           )}
