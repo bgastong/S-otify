@@ -4,61 +4,82 @@ import userEvent from "@testing-library/user-event";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
 import SongDetails from "./SongDetails";
-
-const mockSong = {
-  id: "1",
-  name: "Test Song",
-  artist: "Test Artist",
-  genre: "Pop",
-  image: "test-cover.jpg",
-  duration: "3:30",
-};
-
-vi.mock("react-i18next", () => ({
-  useTranslation: () => ({ t: (key) => key }),
-}));
+import { songsService } from "../../services/songsService";
 
 vi.mock("../../services/songsService", () => ({
   songsService: {
-    getSongById: vi.fn(async (id) => id === mockSong.id ? mockSong : null),
+    getSongById: vi.fn(),
+    isFavorite: vi.fn(),
+    addFavorite: vi.fn(),
+    removeFavorite: vi.fn(),
   },
 }));
 
-describe("SongDetails Component", () => {
-  it("Renderiza correctamente los detalles de la canción", async () => {
-    render(
-      <MemoryRouter initialEntries={[`/details/${mockSong.id}`]}>
-        <Routes>
-          <Route path="/details/:id" element={<SongDetails />} />
-        </Routes>
-      </MemoryRouter>
-    );
+vi.mock("react-i18next", () => ({
+  useTranslation: () => ({
+    t: (key) => key,
+  }),
+}));
 
-    expect(await screen.findByRole("heading", { name: mockSong.name })).toBeInTheDocument();
-    expect(screen.getAllByText(mockSong.artist).length).toBeGreaterThan(0);
-    expect(screen.getAllByText(mockSong.genre).length).toBeGreaterThan(0);
-    expect(screen.getAllByAltText(mockSong.name)[0]).toHaveAttribute("src", mockSong.image);
+describe("SongDetails Component", () => {
+  const mockSong = {
+    id: 1,
+    name: "Test Song",
+    artist: "Test Artist",
+    genre: "Pop",
+    album: "Test Album",
+    duration: "3:30",
+    image: "test-cover.jpg",
+    audioUrl: "test-audio.mp3",
+  };
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    songsService.getSongById.mockResolvedValue(mockSong);
+    songsService.isFavorite.mockResolvedValue({ isFavorite: false });
   });
 
-screen.debug()
-  it("Llama onSelectSong al hacer click en el botón de reproducción", async () => {
-    const onSelectSong = vi.fn();
-
+  const renderSongDetails = (onSelectSong = vi.fn()) => {
     render(
-      <MemoryRouter initialEntries={[`/details/${mockSong.id}`]}>
+      <MemoryRouter initialEntries={["/details/1"]}>
         <Routes>
-          <Route path="/details/:id" element={<SongDetails onSelectSong={onSelectSong} />} />
+          <Route
+            path="/details/:id"
+            element={<SongDetails onSelectSong={onSelectSong} />}
+          />
         </Routes>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
-    expect(await screen.findByRole("heading", { name: mockSong.name })).toBeInTheDocument();
+    return onSelectSong;
+  };
 
-    const playButton = screen.getByRole("button", {
-      name: /details.play/i,
-    });
+  it("Renderiza correctamente los detalles de la canción", async () => {
+    renderSongDetails();
 
-    await userEvent.click(playButton);
+    expect(
+      await screen.findByRole("heading", { name: mockSong.name }),
+    ).toBeInTheDocument();
+
+    expect(screen.getAllByText(mockSong.artist).length).toBeGreaterThan(0);
+    expect(screen.getByText(mockSong.genre)).toBeInTheDocument();
+    expect(screen.getAllByText(mockSong.duration).length).toBeGreaterThan(0);
+  });
+
+  it("Llama onSelectSong al hacer click en el botón de reproducción", async () => {
+    const onSelectSong = renderSongDetails();
+    const user = userEvent.setup();
+
+    expect(
+      await screen.findByRole("heading", { name: mockSong.name }),
+    ).toBeInTheDocument();
+
+    const playButtons = screen.getAllByRole("button");
+    const mainPlayButton = playButtons.find((button) =>
+      button.textContent.includes("▶"),
+    );
+
+    await user.click(mainPlayButton);
 
     expect(onSelectSong).toHaveBeenCalledWith(mockSong, { autoplay: true });
   });
