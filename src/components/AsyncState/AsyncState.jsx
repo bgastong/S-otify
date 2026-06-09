@@ -1,5 +1,3 @@
-import styles from "./AsyncState.module.css";
-
 function AsyncState({
   loading,
   error,
@@ -9,15 +7,24 @@ function AsyncState({
   onRetry,
 }) {
   if (loading) {
-    return <p className={styles.loading}>{loadingMessage}</p>;
+    return (
+      <p className="py-8 text-center text-sm font-medium text-zinc-400">
+        {loadingMessage}
+      </p>
+    );
   }
 
   if (error) {
     return (
-      <div className={styles.errorBox}>
-        <p className={styles.errorText}>{error}</p>
+      <div className="my-6 rounded-2xl border border-red-500/20 bg-red-500/10 p-5 text-center">
+        <p className="text-sm font-semibold text-red-200">{error}</p>
+
         {typeof onRetry === "function" && (
-          <button onClick={onRetry} className={styles.retryButton}>
+          <button
+            type="button"
+            onClick={onRetry}
+            className="mt-4 rounded-full bg-white px-5 py-2 text-sm font-black text-black transition hover:scale-105"
+          >
             Reintentar
           </button>
         )}
@@ -26,7 +33,11 @@ function AsyncState({
   }
 
   if (isEmpty) {
-    return <p className={styles.empty}>{emptyMessage}</p>;
+    return (
+      <p className="py-8 text-center text-sm font-medium text-zinc-500">
+        {emptyMessage}
+      </p>
+    );
   }
 
   return null;
