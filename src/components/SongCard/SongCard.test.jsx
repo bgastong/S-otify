@@ -14,28 +14,47 @@ describe("Song Card Component", () => {
     image: "test-cover.jpg",
   };
 
-  it("Renderiza correctamente los datos de la canción dentro de un Router", async () => {
+  it("Renderiza correctamente los datos de la canción dentro de un Router", () => {
     render(
       <MemoryRouter>
         <SongCard song={song} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(screen.getByText(song.name)).toBeInTheDocument();
     expect(screen.getByText(song.artist)).toBeInTheDocument();
-    expect(screen.getByRole("button")).toBeInTheDocument();
+
+    expect(
+      screen.getByRole("button", { name: /reproducir test song/i }),
+    ).toBeInTheDocument();
   });
 
-  it("Llama a onSelectSong al hacer click", async () => {
+it("Llama a onSelectSong al hacer click en la card", async () => {
+  const onSelectSong = vi.fn();
+
+  render(
+    <MemoryRouter>
+      <SongCard song={song} onSelectSong={onSelectSong} />
+    </MemoryRouter>,
+  );
+
+  await userEvent.click(screen.getByText(song.name));
+
+  expect(onSelectSong).toHaveBeenCalledWith(song);
+});
+  it("Llama a onSelectSong con autoplay al hacer click en reproducir", async () => {
     const onSelectSong = vi.fn();
 
     render(
       <MemoryRouter>
         <SongCard song={song} onSelectSong={onSelectSong} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
-    await userEvent.click(screen.getByRole("button"));
-    expect(onSelectSong).toHaveBeenCalledWith(song);
+    await userEvent.click(
+      screen.getByRole("button", { name: /reproducir test song/i }),
+    );
+
+    expect(onSelectSong).toHaveBeenCalledWith(song, { autoplay: true });
   });
 });
