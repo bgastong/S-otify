@@ -36,39 +36,47 @@ function App() {
 
   return (
     <BrowserRouter>
-      <div 
-        className="min-h-screen flex flex-col text-white overflow-x-hidden relative"
-        style={{
-          backgroundColor: '#000000',
-          backgroundImage: `
-            radial-gradient(circle at top left, rgba(10, 35, 10, 0.7) 0%, transparent 45%),
-            radial-gradient(circle at top right, rgba(10, 35, 10, 0.7) 0%, transparent 45%),
-            linear-gradient(180deg, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.95) 100%)
-            `,
-            backgroundAttachment: 'fixed',
-            backgroundSize: 'cover'
-}}
-      >
-        <Header searchTerm={searchTerm} onSearchChange={setSearchTerm} currentGenre={currentGenre} onFilterChange={handleFilterChange} />
-        <main className="grow pt-28 md:pt-32 pb-36">
-          <LayoutShell>
-            <Routes>
-              <Route path="/" element={<Home onSelectSong={handleSelectSong} searchTerm={searchTerm} currentGenre={currentGenre} />} />
-              <Route path="/details/:id" element={<Details onSelectSong={handleSelectSong} />} />
-              <Route path="/favorites" element={<Favorites />} />
-            </Routes>
-          </LayoutShell>
-        </main>
+      <div className="min-h-screen bg-[#000] text-white">
+        <Header
+          searchTerm={searchTerm}
+          onSearchChange={setSearchTerm}
+          currentGenre={currentGenre}
+          onFilterChange={handleFilterChange}
+        />
+
+        <LayoutShell selectedSong={selectedSong}>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <Home
+                  onSelectSong={handleSelectSong}
+                  searchTerm={searchTerm}
+                  currentGenre={currentGenre}
+                />
+              }
+            />
+            <Route
+              path="/details/:id"
+              element={<Details onSelectSong={handleSelectSong} />}
+            />
+            <Route
+              path="/favorites"
+              element={<Favorites onSelectSong={handleSelectSong} />}
+            />
+          </Routes>
+
+          <Footer />
+        </LayoutShell>
 
         <Player
           audioUrl={selectedSong?.audioUrl || ""}
           title={selectedSong?.name || ""}
           artist={selectedSong?.artist || ""}
+          image={selectedSong?.image || ""}
           notice={playerNotice}
           playRequestId={playRequestId}
         />
-
-        <Footer />
       </div>
     </BrowserRouter>
   );
