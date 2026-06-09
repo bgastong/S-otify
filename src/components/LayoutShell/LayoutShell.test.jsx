@@ -1,36 +1,60 @@
 import "@testing-library/jest-dom/vitest";
 import { render, screen } from "@testing-library/react";
-import { describe, test, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
+import { MemoryRouter } from "react-router-dom";
 import LayoutShell from "./LayoutShell";
 
+vi.mock("react-i18next", () => ({
+  useTranslation: () => ({
+    t: (key) => key,
+  }),
+}));
+
 describe("LayoutShell Component", () => {
-  test("Renderiza children correctamente", () => {
+  const renderLayout = (children, props = {}) =>
     render(
-      <LayoutShell>
-        <div data-testid="child">Contenido</div>
-      </LayoutShell>
+      <MemoryRouter>
+        <LayoutShell {...props}>{children}</LayoutShell>
+      </MemoryRouter>,
     );
 
-    expect(screen.getByTestId("child")).toBeInTheDocument();
-    expect(screen.getByText("Contenido")).toBeInTheDocument();
+  it("Renderiza children correctamente", () => {
+    renderLayout(<div>Contenido de prueba</div>);
+
+    expect(screen.getByText("Contenido de prueba")).toBeInTheDocument();
   });
 
-  test("Aplica la clase main al contenedor", () => {
-    render(<LayoutShell><span>test</span></LayoutShell>);
+  it("Renderiza navegación principal", () => {
+    renderLayout(<div>Contenido</div>);
 
-    const main = document.querySelector("main");
-    expect(main).toBeInTheDocument();
+    expect(screen.getByTitle("nav.home")).toBeInTheDocument();
+    expect(screen.getByTitle("nav.favorites")).toBeInTheDocument();
   });
 
-  test("Permite múltiples children", () => {
-    render(
-      <LayoutShell>
-        <div>Child 1</div>
-        <div>Child 2</div>
-      </LayoutShell>
+  it("Permite múltiples children", () => {
+    renderLayout(
+      <>
+        <p>Primer child</p>
+        <p>Segundo child</p>
+      </>,
     );
 
-    expect(screen.getByText("Child 1")).toBeInTheDocument();
-    expect(screen.getByText("Child 2")).toBeInTheDocument();
+    expect(screen.getByText("Primer child")).toBeInTheDocument();
+    expect(screen.getByText("Segundo child")).toBeInTheDocument();
+  });
+
+  it("Muestra canción seleccionada en el panel derecho", () => {
+    renderLayout(<div>Contenido</div>, {
+      selectedSong: {
+        name: "Test Song",
+        artist: "Test Artist",
+        genre: "Rock",
+        album: "Test Album",
+        image: "test.jpg",
+      },
+    });
+
+    expect(screen.getAllByText("Test Song").length).toBeGreaterThan(0);
+    expect(screen.getByText("Test Artist")).toBeInTheDocument();
   });
 });

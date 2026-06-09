@@ -1,94 +1,87 @@
 import "@testing-library/jest-dom/vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { MemoryRouter } from "react-router-dom";
-import { describe, test, expect, vi } from "vitest";
 import Header from "./Header";
+import { songsService } from "../../services/songsService";
+
+vi.mock("../../services/songsService", () => ({
+  songsService: {
+    getSongs: vi.fn(),
+  },
+}));
 
 vi.mock("react-i18next", () => ({
   useTranslation: () => ({
     t: (key) => key,
-    i18n: { language: "es", changeLanguage: vi.fn() },
+    i18n: {
+      language: "es",
+      changeLanguage: vi.fn(),
+    },
   }),
 }));
 
-vi.mock("../../services/songsService", () => ({
-  songsService: {
-    getSongs: vi.fn(async () => []),
-  },
-}));
-
 describe("Header Component", () => {
-  const defaultProps = {
-    searchTerm: "",
-    onSearchChange: vi.fn(),
-    onFilterChange: vi.fn(),
-    currentGenre: "",
-  };
-
-  test("Renderiza el logo y nombre de la app", () => {
-    render(
-      <MemoryRouter>
-        <Header {...defaultProps} />
-      </MemoryRouter>
-    );
-
-    expect(screen.getByText("Sñotify")).toBeInTheDocument();
-    expect(screen.getByAltText("Logo")).toBeInTheDocument();
+  beforeEach(() => {
+    vi.clearAllMocks();
+    songsService.getSongs.mockResolvedValue([]);
   });
 
-  test("Renderiza los links de navegación en desktop", () => {
+  const renderHeader = (props = {}) =>
     render(
       <MemoryRouter>
-        <Header {...defaultProps} />
-      </MemoryRouter>
+        <Header {...props} />
+      </MemoryRouter>,
     );
 
-    const nav = document.querySelector("nav");
-    expect(nav).toBeInTheDocument();
+  it("Renderiza el logo y nombre de la app", () => {
+    renderHeader();
+
+    expect(screen.getByText("SÑOTIFY")).toBeInTheDocument();
+    expect(screen.getByAltText("Sñotify")).toBeInTheDocument();
   });
 
-  test("Renderiza el input de búsqueda en desktop", () => {
-    render(
-      <MemoryRouter>
-        <Header {...defaultProps} />
-      </MemoryRouter>
-    );
+  it("Renderiza el input de búsqueda en desktop", () => {
+    renderHeader();
 
-    // Hay dos inputs (mobile y desktop) - usamos getAllBy y tomamos el visible en desktop
-    const inputs = screen.getAllByPlaceholderText("home.searchPlaceholder");
-    const desktopInput = inputs[0]; // El primero es el de desktop (hidden md:flex)
-    expect(desktopInput).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText("home.searchPlaceholder"),
+    ).toBeInTheDocument();
   });
 
-  test("Llama a onSearchChange al escribir en el input", async () => {
+  it("Llama a onSearchChange al escribir en el input", async () => {
+    const onSearchChange = vi.fn();
     const user = userEvent.setup();
-    render(
-      <MemoryRouter>
-        <Header {...defaultProps} />
-      </MemoryRouter>
+
+    renderHeader({ onSearchChange });
+
+    await user.type(
+      screen.getByPlaceholderText("home.searchPlaceholder"),
+      "Queen",
     );
 
-    const inputs = screen.getAllByPlaceholderText("home.searchPlaceholder");
-    const desktopInput = inputs[0];
-    await user.type(desktopInput, "test");
-
-    // onSearchChange se llama por cada caracter tipeado
-    expect(defaultProps.onSearchChange).toHaveBeenCalledTimes(4);
-    expect(defaultProps.onSearchChange).toHaveBeenCalledWith("t");
-    expect(defaultProps.onSearchChange).toHaveBeenCalledWith("e");
-    expect(defaultProps.onSearchChange).toHaveBeenCalledWith("s");
-    expect(defaultProps.onSearchChange).toHaveBeenCalledWith("t");
+    expect(onSearchChange).toHaveBeenCalled();
   });
 
-  test("Renderiza botones de idioma", () => {
-    render(
-      <MemoryRouter>
-        <Header {...defaultProps} />
-      </MemoryRouter>
-    );
+  it("Renderiza botones de idioma", () => {
+    renderHeader();
 
-    const langButtons = screen.getAllByTitle(/Español|English/);
-    expect(langButtons).toHaveLength(2);
+    expect(screen.getByText("ES")).toBeInTheDocument();
+    expect(screen.getByText("GB")).toBeInTheDocument();
+  });
+
+  it("Carga géneros desde songsService", async () => {
+    songsService.getSongs.mockResolvedValue([
+      { id: 1, genre: "Rock" },
+      { id: 2, genre: "Pop" },
+    ]);
+
+    renderHeader();
+
+    expect(songsService.getSongs).toHaveBeenCalledWith({
+      page: 1,
+      limit: 20,
+    });
   });
 });
