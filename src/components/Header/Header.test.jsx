@@ -35,12 +35,12 @@ describe("Header Component", () => {
       </MemoryRouter>,
     );
 
-  it("Renderiza el logo y nombre de la app", () => {
-    renderHeader();
+it("Renderiza el nombre de la app", () => {
+  renderHeader();
 
-    expect(screen.getByText("SÑOTIFY")).toBeInTheDocument();
-    expect(screen.getByAltText("Sñotify")).toBeInTheDocument();
-  });
+  expect(screen.getByText("SÑOTIFY")).toBeInTheDocument();
+  expect(screen.queryByAltText("Sñotify")).not.toBeInTheDocument();
+});
 
   it("Renderiza el input de búsqueda en desktop", () => {
     renderHeader();

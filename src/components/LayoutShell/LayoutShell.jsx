@@ -17,19 +17,17 @@ function LayoutShell({ children, selectedSong }) {
       <div className="fixed inset-0 bg-[linear-gradient(180deg,#03150a_0%,#000_30%,#000_100%)]" />
 
       <aside className="fixed left-0 top-0 z-40 hidden h-screen w-20 flex-col items-center border-r border-white/5 bg-black p-3 md:flex">
-        <Link
-          to="/"
-          className="mt-2 grid h-14 w-14 place-items-center rounded-2xl bg-[#121212] ring-1 ring-white/10 transition hover:bg-[#181818]"
-          title="Sñotify"
-        >
-          <div className="grid h-11 w-11 place-items-center rounded-full bg-[#1db954] shadow-lg shadow-[#1db954]/20">
-            <img
-              src="/logo (2).png"
-              alt="Sñotify"
-              className="h-8 w-8 object-contain"
-            />
-          </div>
-        </Link>
+       <Link
+  to="/"
+  className="mt-2 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#121212] ring-1 ring-white/10 transition hover:bg-[#181818]"
+  title="Sñotify"
+>
+  <img
+    src="/logo (2).png"
+    alt="Sñotify"
+    className="h-12 w-12 object-contain drop-shadow-[0_0_12px_rgba(29,185,84,0.45)]"
+  />
+</Link>
 
         <nav className="mt-8 flex flex-col gap-3">
           <Link to="/" className={navClass("/")} title={t("nav.home")}>
