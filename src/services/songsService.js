@@ -18,26 +18,27 @@ async function handleResponse(response, fallbackMessage) {
   return unwrapApiData(payload);
 }
 
-function buildSongsQuery({
-  page = 1,
-  limit = 20,
-  search = "",
-  genre = "",
-} = {}) {
-  const params = new URLSearchParams();
+function encodeQueryParam(value) {
+  return encodeURIComponent(value);
+}
 
-  params.set("page", String(page));
-  params.set("limit", String(limit));
+function buildSongsQuery({ page = 1, limit = 20, search = "", genre = "" } = {}) {
+  const params = [];
+  const trimmedSearch = search.trim();
+  const trimmedGenre = genre.trim();
 
-  if (search.trim()) {
-    params.set("search", search.trim());
+  if (trimmedSearch) {
+    params.push(`search=${encodeQueryParam(trimmedSearch)}`);
   }
 
-  if (genre.trim()) {
-    params.set("genre", genre.trim());
+  params.push(`page=${encodeQueryParam(String(page))}`);
+  params.push(`limit=${encodeQueryParam(String(limit))}`);
+
+  if (trimmedGenre) {
+    params.push(`genre=${encodeQueryParam(trimmedGenre)}`);
   }
 
-  return params.toString();
+  return params.join("&");
 }
 
 export const songsService = {
@@ -48,19 +49,6 @@ export const songsService = {
     return handleResponse(
       response,
       "No pudimos cargar las canciones en este momento.",
-    );
-  },
-
-  async getSongsByArtist(options = {}) {
-    const query = buildSongsQuery({
-      ...options,
-      search: options.artist || options.search || "",
-    });
-    const response = await fetch(`${API_URL}/songs?${query}`);
-
-    return handleResponse(
-      response,
-      "No pudimos completar la busqueda por artista.",
     );
   },
 
