@@ -1,6 +1,7 @@
 import { useState, useEffect, useId, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { songsService } from "../../services/songsService";
+import { useAuth } from "../../context/AuthContext.jsx";
 
 function Header({
   searchTerm = "",
@@ -9,14 +10,20 @@ function Header({
   currentGenre = "",
 }) {
   const { t, i18n } = useTranslation();
+  const { user, logout } = useAuth();
   const [genres, setGenres] = useState([]);
   const [open, setOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const ref = useRef(null);
+  const menuRef = useRef(null);
   const searchInputId = useId();
 
   useEffect(() => {
     const close = (event) => {
       if (ref.current && !ref.current.contains(event.target)) setOpen(false);
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setMenuOpen(false);
+      }
     };
 
     document.addEventListener("mousedown", close);
@@ -44,11 +51,9 @@ function Header({
   return (
     <header className="fixed left-0 right-0 top-0 z-50 border-b border-white/5 bg-black/90 backdrop-blur-xl md:left-20">
       <nav className="flex h-16 items-center gap-3 px-4 md:px-6">
-       <div className="flex min-w-fit items-center">
-  <span className="text-lg font-black tracking-tight">
-    SÑOTIFY
-  </span>
-</div>
+        <div className="flex min-w-fit items-center">
+          <span className="text-lg font-black tracking-tight">SÑOTIFY</span>
+        </div>
 
         <div className="relative flex flex-1 items-center">
           <span className="absolute left-4 text-zinc-500">⌕</span>
@@ -134,6 +139,59 @@ function Header({
           >
             GB
           </button>
+        </div>
+
+        <div className="relative" ref={menuRef}>
+          <button
+            type="button"
+            onClick={() => setMenuOpen((value) => !value)}
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-[#181818] text-lg text-zinc-200 transition hover:bg-[#242424]"
+            aria-label={t("auth.account")}
+          >
+            👤
+          </button>
+
+          {menuOpen && (
+            <div className="absolute right-0 top-full mt-2 w-60 rounded-xl border border-white/10 bg-[#181818] p-3 shadow-2xl shadow-black/70">
+              {user ? (
+                <>
+                  <div className="mb-3 rounded-lg border border-white/10 bg-black/30 p-3">
+                    <p className="text-sm font-semibold text-white">
+                      {user.name || t("auth.user")}
+                    </p>
+                    <p className="mt-1 text-xs text-zinc-400">{user.email}</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      logout();
+                      setMenuOpen(false);
+                    }}
+                    className="w-full rounded-lg border border-white/10 px-3 py-2 text-left text-sm font-semibold text-zinc-200 transition hover:bg-white/10"
+                  >
+                    {t("auth.logout")}
+                  </button>
+                </>
+              ) : (
+                <div className="space-y-2 flex flex-col">
+                  <a
+                   href="/login"
+                    type="button"
+                    className="w-full rounded-lg bg-[#1db954] px-3 py-2 text-left text-sm font-semibold text-black transition hover:bg-[#1ed760]"
+                  >
+                    {t("auth.login")}
+                  </a>
+                  <a
+                    href="/register"
+                    type="button"
+                    className="w-full rounded-lg border border-white/10 px-3 py-2 text-left text-sm font-semibold text-zinc-200 transition hover:bg-white/10"
+                  >
+                    {t("auth.register")}
+                  </a>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </nav>
     </header>

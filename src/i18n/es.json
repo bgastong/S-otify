@@ -90,5 +90,19 @@
     "github": "GitHub",
     "spotifyInspired": "Inspirado en Spotify",
     "copyright": "© {{year}} {{appName}} - Todos los derechos reservados"
+  },
+  "auth": {
+    "account": "Cuenta",
+    "user": "Usuario",
+    "welcome": "Bienvenido a",
+    "loginSubtitle": "Inicia sesión para seguir escuchando tus canciones favoritas.",
+    "createAccount": "Crear cuenta",
+    "registerSubtitle": "Regístrate para guardar tus favoritos y disfrutar de tu música.",
+    "name": "Nombre",
+    "email": "Email",
+    "password": "Contraseña",
+    "login": "Iniciar sesión",
+    "register": "Registrarse",
+    "logout": "Cerrar sesión"
   }
 }

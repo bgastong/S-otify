@@ -90,5 +90,19 @@
     "github": "GitHub",
     "spotifyInspired": "Spotify Inspired",
     "copyright": "© {{year}} {{appName}} - All rights reserved"
+  },
+  "auth": {
+    "account": "Account",
+    "user": "User",
+    "welcome": "Welcome to",
+    "loginSubtitle": "Log in to keep listening to your favorite songs.",
+    "createAccount": "Create account",
+    "registerSubtitle": "Sign up to save your favorites and enjoy your music.",
+    "name": "Name",
+    "email": "Email",
+    "password": "Password",
+    "login": "Log in",
+    "register": "Sign up",
+    "logout": "Log out"
   }
 }
