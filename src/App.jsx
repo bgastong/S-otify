@@ -7,6 +7,9 @@ import Header from "./components/Header/Header.jsx";
 import Footer from "./components/Footer/Footer.jsx";
 import LayoutShell from "./components/LayoutShell/LayoutShell.jsx";
 import Player from "./components/Player/Player.jsx";
+import Login from "./pages/login/Login.jsx";
+import Register from "./pages/register/Register.jsx";
+
 
 function App() {
   const [selectedSong, setSelectedSong] = useState(null);
@@ -64,6 +67,9 @@ function App() {
               path="/favorites"
               element={<Favorites onSelectSong={handleSelectSong} />}
             />
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
           </Routes>
 
           <Footer />

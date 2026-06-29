@@ -71,6 +71,17 @@ it("Renderiza el nombre de la app", () => {
     expect(screen.getByText("GB")).toBeInTheDocument();
   });
 
+  it("Abre el panel de autenticación al presionar Ingresar", async () => {
+    const user = userEvent.setup();
+
+    renderHeader();
+
+    await user.click(screen.getByRole("button", { name: /ingresar/i }));
+
+    expect(screen.getByText("Iniciar sesión")).toBeInTheDocument();
+    expect(screen.getByLabelText("Email")).toBeInTheDocument();
+  });
+
   it("Carga géneros desde songsService", async () => {
     songsService.getSongs.mockResolvedValue([
       { id: 1, genre: "Rock" },
