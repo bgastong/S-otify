@@ -10,7 +10,6 @@ import Player from "./components/Player/Player.jsx";
 import Login from "./pages/login/Login.jsx";
 import Register from "./pages/register/Register.jsx";
 
-
 function App() {
   const [selectedSong, setSelectedSong] = useState(null);
   const [playerNotice, setPlayerNotice] = useState("");
@@ -39,7 +38,7 @@ function App() {
 
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-[#000] text-white">
+      <div className="min-h-screen bg-black text-white">
         <Header
           searchTerm={searchTerm}
           onSearchChange={setSearchTerm}
@@ -59,17 +58,19 @@ function App() {
                 />
               }
             />
+
             <Route
               path="/details/:id"
               element={<Details onSelectSong={handleSelectSong} />}
             />
+
             <Route
               path="/favorites"
               element={<Favorites onSelectSong={handleSelectSong} />}
             />
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
           </Routes>
 
           <Footer />

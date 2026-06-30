@@ -1,15 +1,22 @@
 import "@testing-library/jest-dom/vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { MemoryRouter } from "react-router-dom";
 import Header from "./Header";
 import { songsService } from "../../services/songsService";
+import { AuthProvider } from "../../context/AuthContext";
 
 vi.mock("../../services/songsService", () => ({
   songsService: {
     getSongs: vi.fn(),
   },
+}));
+
+vi.mock("../../services/authService", () => ({
+  me: vi.fn().mockRejectedValue(new Error("No session")),
+  login: vi.fn(),
+  register: vi.fn(),
 }));
 
 vi.mock("react-i18next", () => ({
@@ -25,22 +32,25 @@ vi.mock("react-i18next", () => ({
 describe("Header Component", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    localStorage.clear();
     songsService.getSongs.mockResolvedValue([]);
   });
 
   const renderHeader = (props = {}) =>
     render(
       <MemoryRouter>
-        <Header {...props} />
+        <AuthProvider>
+          <Header {...props} />
+        </AuthProvider>
       </MemoryRouter>,
     );
 
-it("Renderiza el nombre de la app", () => {
-  renderHeader();
+  it("Renderiza el nombre de la app", () => {
+    renderHeader();
 
-  expect(screen.getByText("SÑOTIFY")).toBeInTheDocument();
-  expect(screen.queryByAltText("Sñotify")).not.toBeInTheDocument();
-});
+    expect(screen.getByText("SÑOTIFY")).toBeInTheDocument();
+    expect(screen.queryByAltText("Sñotify")).not.toBeInTheDocument();
+  });
 
   it("Renderiza el input de búsqueda en desktop", () => {
     renderHeader();
@@ -71,16 +81,18 @@ it("Renderiza el nombre de la app", () => {
     expect(screen.getByText("GB")).toBeInTheDocument();
   });
 
-  it("Abre el panel de autenticación al presionar Ingresar", async () => {
-    const user = userEvent.setup();
+it("Abre el panel de autenticación al presionar Ingresar", async () => {
+  const user = userEvent.setup();
 
-    renderHeader();
+  renderHeader();
 
-    await user.click(screen.getByRole("button", { name: /ingresar/i }));
+  await user.click(
+    screen.getByRole("button", { name: "auth.account" }),
+  );
 
-    expect(screen.getByText("Iniciar sesión")).toBeInTheDocument();
-    expect(screen.getByLabelText("Email")).toBeInTheDocument();
-  });
+  expect(screen.getByText("auth.login")).toBeInTheDocument();
+  expect(screen.getByText("auth.register")).toBeInTheDocument();
+});
 
   it("Carga géneros desde songsService", async () => {
     songsService.getSongs.mockResolvedValue([
@@ -90,9 +102,11 @@ it("Renderiza el nombre de la app", () => {
 
     renderHeader();
 
-    expect(songsService.getSongs).toHaveBeenCalledWith({
-      page: 1,
-      limit: 20,
+    await waitFor(() => {
+      expect(songsService.getSongs).toHaveBeenCalledWith({
+        page: 1,
+        limit: 20,
+      });
     });
   });
 });
