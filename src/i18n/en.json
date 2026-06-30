@@ -41,7 +41,11 @@
     "loadingMessage": "Loading favorites...",
     "emptyTitle": "You haven't saved any songs yet",
     "emptyText": "Mark songs as favorites and they will appear in this section.",
-    "exploreLink": "Explore songs"
+    "exploreLink": "Explore songs",
+    "loginTitle": "Log in to see your favorites",
+    "loginText": "Favorites are saved to your account and synced with the database.",
+    "loginButton": "Log in",
+    "registerButton": "Create account"
   },
   "details": {
     "eyebrow": "Detail",
@@ -65,7 +69,8 @@
     "loadingMessage": "Loading song details...",
     "notFound": "Song not found.",
     "errorMessage": "Could not load song details.",
-    "favoriteError": "Could not update favorites."
+    "favoriteError": "Could not update favorites.",
+    "loginRequired": "You need to log in to use favorites."
   },
   "player": {
     "noSongSelected": "No song selected",
@@ -103,6 +108,9 @@
     "password": "Password",
     "login": "Log in",
     "register": "Sign up",
-    "logout": "Log out"
+    "logout": "Log out",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "registerSuccess": "User registered successfully."
   }
 }

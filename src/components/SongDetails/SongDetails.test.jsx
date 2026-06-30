@@ -5,6 +5,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
 import SongDetails from "./SongDetails";
 import { songsService } from "../../services/songsService";
+import { AuthProvider } from "../../context/AuthContext";
 
 vi.mock("../../services/songsService", () => ({
   songsService: {
@@ -13,6 +14,12 @@ vi.mock("../../services/songsService", () => ({
     addFavorite: vi.fn(),
     removeFavorite: vi.fn(),
   },
+}));
+
+vi.mock("../../services/authService", () => ({
+  me: vi.fn().mockRejectedValue(new Error("No session")),
+  login: vi.fn(),
+  register: vi.fn(),
 }));
 
 vi.mock("react-i18next", () => ({
@@ -35,6 +42,7 @@ describe("SongDetails Component", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    localStorage.clear();
     songsService.getSongById.mockResolvedValue(mockSong);
     songsService.isFavorite.mockResolvedValue({ isFavorite: false });
   });
@@ -42,12 +50,14 @@ describe("SongDetails Component", () => {
   const renderSongDetails = (onSelectSong = vi.fn()) => {
     render(
       <MemoryRouter initialEntries={["/details/1"]}>
-        <Routes>
-          <Route
-            path="/details/:id"
-            element={<SongDetails onSelectSong={onSelectSong} />}
-          />
-        </Routes>
+        <AuthProvider>
+          <Routes>
+            <Route
+              path="/details/:id"
+              element={<SongDetails onSelectSong={onSelectSong} />}
+            />
+          </Routes>
+        </AuthProvider>
       </MemoryRouter>,
     );
 

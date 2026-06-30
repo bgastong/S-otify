@@ -1,5 +1,17 @@
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
+function getAuthHeaders() {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    return {};
+  }
+
+  return {
+    Authorization: `Bearer ${token}`,
+  };
+}
+
 function unwrapApiData(payload) {
   return payload?.data ?? payload;
 }
@@ -11,7 +23,7 @@ async function handleResponse(response, fallbackMessage) {
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => null);
-    throw new Error(errorData?.error || fallbackMessage);
+    throw new Error(errorData?.error || errorData?.message || fallbackMessage);
   }
 
   const payload = await response.json();
@@ -56,11 +68,12 @@ export const songsService = {
       ...options,
       search: options.artist || options.search || "",
     });
+
     const response = await fetch(`${API_URL}/songs?${query}`);
 
     return handleResponse(
       response,
-      "No pudimos completar la busqueda por artista.",
+      "No pudimos completar la búsqueda por artista.",
     );
   },
 
@@ -69,7 +82,7 @@ export const songsService = {
 
     return handleResponse(
       response,
-      "No pudimos cargar la cancion seleccionada.",
+      "No pudimos cargar la canción seleccionada.",
     );
   },
 
@@ -80,67 +93,96 @@ export const songsService = {
     });
   },
 
-  async getFavorites(userId = "anonymous", page = 1, limit = 20) {
-    const params = new URLSearchParams();
+  async getFavorites(page = 1, limit = 20) {
+    const token = localStorage.getItem("token");
 
-    params.set("userId", userId);
+    if (!token) {
+      return [];
+    }
+
+    const params = new URLSearchParams();
     params.set("page", String(page));
     params.set("limit", String(limit));
 
-    const response = await fetch(`${API_URL}/favorites?${params.toString()}`);
+    const response = await fetch(`${API_URL}/favorites?${params.toString()}`, {
+      headers: {
+        ...getAuthHeaders(),
+      },
+    });
 
-    const favorites = await handleResponse(
+    const result = await handleResponse(
       response,
       "No pudimos cargar tus canciones favoritas.",
     );
 
-    return Array.isArray(favorites)
-      ? favorites.map((favorite) => favorite.song || favorite).filter(Boolean)
-      : [];
+    if (Array.isArray(result)) {
+      return result.map((favorite) => favorite.song || favorite).filter(Boolean);
+    }
+
+    if (Array.isArray(result?.songs)) {
+      return result.songs;
+    }
+
+    if (Array.isArray(result?.favorites)) {
+      return result.favorites
+        .map((favorite) => favorite.song || favorite)
+        .filter(Boolean);
+    }
+
+    return [];
   },
 
-  async isFavorite(songId, userId = "anonymous") {
-    const params = new URLSearchParams();
+  async isFavorite(songId) {
+    const token = localStorage.getItem("token");
 
-    params.set("userId", userId);
+    if (!token) {
+      return { isFavorite: false };
+    }
 
-    const response = await fetch(
-      `${API_URL}/songs/${songId}/favorites?${params.toString()}`,
-    );
+    const favorites = await this.getFavorites();
 
-    return handleResponse(
-      response,
-      "No pudimos verificar si la cancion esta en favoritos.",
-    );
+    return {
+      isFavorite: favorites.some((song) => String(song.id) === String(songId)),
+    };
   },
 
-  async addFavorite(songId, userId = "anonymous") {
-    const response = await fetch(`${API_URL}/songs/${songId}/favorites`, {
+  async addFavorite(songId) {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      throw new Error("Tenés que iniciar sesión para agregar favoritos.");
+    }
+
+    const response = await fetch(`${API_URL}/favorites/${songId}`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        ...getAuthHeaders(),
       },
-      body: JSON.stringify({ userId }),
     });
 
     return handleResponse(
       response,
-      "No pudimos agregar la cancion a favoritos.",
+      "No pudimos agregar la canción a favoritos.",
     );
   },
 
-  async removeFavorite(songId, userId = "anonymous") {
-    const response = await fetch(`${API_URL}/songs/${songId}/favorites`, {
+  async removeFavorite(songId) {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      throw new Error("Tenés que iniciar sesión para quitar favoritos.");
+    }
+
+    const response = await fetch(`${API_URL}/favorites/${songId}`, {
       method: "DELETE",
       headers: {
-        "Content-Type": "application/json",
+        ...getAuthHeaders(),
       },
-      body: JSON.stringify({ userId }),
     });
 
     return handleResponse(
       response,
-      "No pudimos quitar la cancion de favoritos.",
+      "No pudimos quitar la canción de favoritos.",
     );
   },
 };

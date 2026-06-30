@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { songsService } from "../../services/songsService";
 import AsyncState from "../AsyncState/AsyncState";
+import { useAuth } from "../../context/AuthContext";
 
 function formatDuration(duration) {
   if (!duration) return "0:00";
@@ -22,7 +23,7 @@ function SongDetails({ onSelectSong }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const { t } = useTranslation();
-
+  const { token } = useAuth();
   const [song, setSong] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -55,26 +56,31 @@ function SongDetails({ onSelectSong }) {
     };
   }, [id, t]);
 
-  useEffect(() => {
-    let isMounted = true;
+useEffect(() => {
+  let isMounted = true;
 
-    async function fetchFavoriteState() {
-      if (!song?.id) return;
+  async function fetchFavoriteState() {
+    if (!song?.id) return;
 
-      try {
-        const data = await songsService.isFavorite(song.id);
-        if (isMounted) setIsFavorite(Boolean(data?.isFavorite));
-      } catch {
-        if (isMounted) setIsFavorite(false);
-      }
+    if (!token) {
+      setIsFavorite(false);
+      return;
     }
 
-    fetchFavoriteState();
+    try {
+      const data = await songsService.isFavorite(song.id);
+      if (isMounted) setIsFavorite(Boolean(data?.isFavorite));
+    } catch {
+      if (isMounted) setIsFavorite(false);
+    }
+  }
 
-    return () => {
-      isMounted = false;
-    };
-  }, [song?.id]);
+  fetchFavoriteState();
+
+  return () => {
+    isMounted = false;
+  };
+}, [song?.id, token]);
 
   useEffect(() => {
     if (!song?.audioUrl || !audioRef.current) return;
@@ -96,20 +102,27 @@ function SongDetails({ onSelectSong }) {
   }, [song?.audioUrl]);
 
   const handleFavorite = async () => {
-    if (!song) return;
+  if (!song) return;
 
-    try {
-      if (isFavorite) {
-        await songsService.removeFavorite(song.id);
-        setIsFavorite(false);
-      } else {
-        await songsService.addFavorite(song.id);
-        setIsFavorite(true);
-      }
-    } catch (err) {
-      setError(err.message || t("details.favoriteError"));
+  if (!token) {
+    setError("Tenés que iniciar sesión para usar favoritos.");
+    return;
+  }
+
+  try {
+    setError("");
+
+    if (isFavorite) {
+      await songsService.removeFavorite(song.id);
+      setIsFavorite(false);
+    } else {
+      await songsService.addFavorite(song.id);
+      setIsFavorite(true);
     }
-  };
+  } catch (err) {
+    setError(err.message || t("details.favoriteError"));
+  }
+};
 
   const handlePlay = () => {
     if (song && typeof onSelectSong === "function") {

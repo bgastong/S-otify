@@ -1,108 +1,52 @@
-# S-otify
+# 🎵 S-otify
 
-## Catedra
+Single Page Application inspirada en Spotify desarrollada para la materia **Programación Web Avanzada** de la **Facultad de Informática - UNCo**.
 
-- Facultad de Informatica - Programacion Web Avanzada
-- Trabajo Practico: React Parte II
+S-otify permite explorar un catálogo de canciones, reproducirlas, filtrarlas por nombre, artista o género, visualizar información detallada y administrar favoritos persistentes mediante autenticación de usuarios.
 
-## Integrantes
+---
 
-- Gaston Berhau
+# 👥 Integrantes
+
+- Gastón Berhau
 - Fabrizio Brollo
-- Valentin Bustamante
+- Valentín Bustamante
 - Lucas Ortiz
 
-## Descripcion
+---
 
-S-otify es una SPA de musica desarrollada con React, React Router y Tailwind CSS. La aplicacion consume una API simulada en MockAPI para listar canciones, buscar por cancion o artista, aplicar filtros por genero y visualizar detalles por elemento.
+# 🚀 Características
 
-## Funcionalidades principales
+La aplicación implementa las siguientes funcionalidades:
 
-- Home con cards de canciones.
-- Busqueda letra a letra por cancion y artista.
-- Filtro por genero.
-- Navegacion entre Home, Details y Favorites.
-- Vista de detalle con informacion ampliada por id.
-- Exportacion a PDF desde details.
-- Estilo visual inspirado en Spotify.
+- 🎵 Catálogo de canciones
+- 🔍 Búsqueda por nombre o artista
+- 🎼 Filtro por género
+- ❤️ Favoritos persistentes
+- 🔐 Registro e inicio de sesión
+- 🚪 Cierre de sesión
+- 👤 Persistencia de usuario mediante JWT
+- 📄 Vista de detalle de canciones
+- ▶️ Reproductor integrado
+- 🌎 Internacionalización (Español / Inglés)
+- 📱 Diseño Responsive
+- 🎨 Interfaz inspirada en Spotify
+- 🧪 Testing automático con Vitest
 
-## Tecnologias
+---
+
+# 🛠 Tecnologías utilizadas
+
+## Frontend
 
 - React 19
 - Vite 8
-- Tailwind CSS 4
 - React Router DOM
+- Tailwind CSS
+- i18next
 - jsPDF
 
-## Estructura del proyecto
-
-- src/main.jsx: entrada de la app.
-- src/App.jsx: layout global y rutas.
-- src/pages: vistas principales.
-- src/components: componentes reutilizables.
-- src/services: acceso a MockAPI.
-- src/hooks: logica compartida de estado.
-- src/constants: configuraciones globales.
-- src/utils: utilidades auxiliares.
-- docs: documentacion tecnica.
-- scripts: scripts de carga de datos.
-
-Mas detalle en docs/ARCHITECTURE.md.
-
-## Requisitos
-
-- Node.js 20 o superior.
-- npm 10 o superior.
-
-## Instalacion y ejecucion
-
-1. Clonar repositorio:
-
-	git clone <URL_DEL_REPO>
-
-2. Entrar al proyecto:
-
-	cd S-otify
-
-3. Instalar dependencias:
-
-	npm install
-
-4. Iniciar entorno de desarrollo:
-
-	npm run dev
-
-5. Verificar calidad:
-
-	npm run lint
-
-6. Build de produccion:
-
-	npm run build
-
-## Scripts
-
-- npm run dev
-- npm run build
-- npm run preview
-- npm run lint
-- npm run seed:songs
-- npm run test
-- npm run test:run
-
-## API
-
-Base URL utilizada:
-
-https://69ebb64897482ad5c528051d.mockapi.io/api/s-otify/songs
-
-Documentacion de endpoints y contrato: docs/API.md.
-
-## Testing automático
-
-Este proyecto incorpora testing automático para validar componentes, páginas, hooks y funcionalidades principales de la aplicación.
-
-### Librerías utilizadas
+## Testing
 
 - Vitest
 - React Testing Library
@@ -110,16 +54,263 @@ Este proyecto incorpora testing automático para validar componentes, páginas, 
 - user-event
 - jsdom
 
-### Comandos de testing
+## Backend consumido
 
-Ejecutar tests en modo desarrollo:
+La aplicación consume una API REST propia desarrollada con:
+
+- Node.js
+- Express
+- Prisma ORM
+- PostgreSQL
+- JWT Authentication
+
+---
+
+# 📂 Estructura del proyecto
+
+```
+src
+│
+├── components
+│
+├── pages
+│
+├── context
+│
+├── hooks
+│
+├── services
+│
+├── constants
+│
+├── i18n
+│
+├── utils
+│
+├── assets
+│
+├── App.jsx
+│
+└── main.jsx
+```
+
+### Componentes principales
+
+- Header
+- Footer
+- LayoutShell
+- Player
+- SongCard
+- SongDetails
+- AsyncState
+
+### Páginas
+
+- Home
+- Favorites
+- Login
+- Register
+
+---
+
+# 🔐 Autenticación
+
+La autenticación utiliza **JWT (JSON Web Token)**.
+
+El flujo implementado es:
+
+```
+Registro
+      │
+      ▼
+Inicio de sesión
+      │
+      ▼
+JWT
+      │
+      ▼
+AuthContext
+      │
+      ▼
+Peticiones autenticadas
+```
+
+El usuario permanece autenticado hasta cerrar sesión.
+
+---
+
+# ❤️ Favoritos
+
+Los favoritos son persistentes.
+
+Cada usuario posee su propia lista de favoritos almacenada en la base de datos del backend.
+
+No se utiliza LocalStorage para almacenar favoritos.
+
+---
+
+# 🌎 Internacionalización
+
+Idiomas soportados:
+
+- Español
+- Inglés
+
+Implementado mediante **i18next**.
+
+---
+
+# 🌐 API
+
+El frontend consume la API REST del proyecto backend.
+
+Variable de entorno:
+
+```env
+VITE_API_URL=http://localhost:3000/api
+```
+
+---
+
+# ⚙️ Instalación
+
+Clonar el repositorio
+
+```bash
+git clone https://github.com/bgastong/S-otify.git
+```
+
+Entrar al proyecto
+
+```bash
+cd S-otify
+```
+
+Instalar dependencias
+
+```bash
+npm install
+```
+
+Crear archivo `.env`
+
+```env
+VITE_API_URL=http://localhost:3000/api
+```
+
+Ejecutar
+
+```bash
+npm run dev
+```
+
+La aplicación estará disponible en
+
+```
+http://localhost:5173
+```
+
+---
+
+# 📦 Scripts disponibles
+
+Desarrollo
+
+```bash
+npm run dev
+```
+
+Build
+
+```bash
+npm run build
+```
+
+Vista previa
+
+```bash
+npm run preview
+```
+
+Testing interactivo
 
 ```bash
 npm run test
+```
 
-## Notas de diseno
+Testing CI
 
-- Se centralizo todo acceso HTTP en src/services/songsService.js.
-- Se reutiliza src/hooks/useAsyncStatus.js para estados async.
-- Se aplico una estetica visual tipo Spotify manteniendo componentes modulares.
+```bash
+npm run test:run
+```
 
+---
+
+# 🧪 Testing
+
+El proyecto incluye pruebas automáticas para los principales componentes.
+
+Actualmente se encuentran testeados:
+
+- Home
+- Header
+- Footer
+- LayoutShell
+- Player
+- SongCard
+- SongDetails
+- AsyncState
+- useAsyncStatus
+
+Todos los tests deben pasar correctamente ejecutando:
+
+```bash
+npm run test
+```
+
+---
+
+# 📱 Responsive
+
+La interfaz fue desarrollada utilizando Tailwind CSS siguiendo un diseño responsive inspirado en Spotify.
+
+Se adapta correctamente a:
+
+- Desktop
+- Tablet
+- Mobile
+
+---
+
+# 📌 Requisitos
+
+- Node.js 20+
+- npm 10+
+
+---
+
+# 🚀 Deploy
+
+Frontend:
+
+Vercel
+
+Backend:
+
+API REST propia desplegada en Vercel.
+
+---
+
+# 📖 Materia
+
+Programación Web Avanzada
+
+Facultad de Informática
+
+Universidad Nacional del Comahue
+
+---
+
+# © Licencia
+
+Proyecto académico desarrollado con fines educativos.

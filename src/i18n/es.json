@@ -41,7 +41,11 @@
     "loadingMessage": "Cargando favoritos...",
     "emptyTitle": "Todavía no guardaste canciones",
     "emptyText": "Marcá favoritos y van a aparecer en esta sección.",
-    "exploreLink": "Explorar canciones"
+    "exploreLink": "Explorar canciones",
+    "loginTitle": "Iniciá sesión para ver tus favoritos",
+    "loginText": "Los favoritos se guardan en tu cuenta y se sincronizan con la base de datos.",
+    "loginButton": "Iniciar sesión",
+    "registerButton": "Crear cuenta"
   },
   "details": {
     "eyebrow": "Detalle",
@@ -65,7 +69,8 @@
     "loadingMessage": "Cargando detalles de la canción...",
     "notFound": "No se encontró la canción.",
     "errorMessage": "No pudimos cargar los detalles de la canción.",
-    "favoriteError": "No pudimos actualizar favoritos."
+    "favoriteError": "No pudimos actualizar favoritos.",
+    "loginRequired": "Tenés que iniciar sesión para usar favoritos."
   },
   "player": {
     "noSongSelected": "Sin ninguna canción seleccionada",
@@ -95,14 +100,17 @@
     "account": "Cuenta",
     "user": "Usuario",
     "welcome": "Bienvenido a",
-    "loginSubtitle": "Inicia sesión para seguir escuchando tus canciones favoritas.",
+    "loginSubtitle": "Iniciá sesión para seguir escuchando tus canciones favoritas.",
     "createAccount": "Crear cuenta",
-    "registerSubtitle": "Regístrate para guardar tus favoritos y disfrutar de tu música.",
+    "registerSubtitle": "Registrate para guardar tus favoritos y disfrutar de tu música.",
     "name": "Nombre",
     "email": "Email",
     "password": "Contraseña",
     "login": "Iniciar sesión",
     "register": "Registrarse",
-    "logout": "Cerrar sesión"
+    "logout": "Cerrar sesión",
+    "noAccount": "¿No tenés cuenta?",
+    "hasAccount": "¿Ya tenés cuenta?",
+    "registerSuccess": "Usuario registrado correctamente."
   }
 }
